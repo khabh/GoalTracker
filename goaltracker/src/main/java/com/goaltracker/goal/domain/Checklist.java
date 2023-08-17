@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+
 @Entity
 @Table(name = "checklists")
+@Getter
+@Setter
 public class Checklist {
 
     @Id
@@ -20,4 +21,11 @@ public class Checklist {
     @ManyToOne()
     @JoinColumn(name = "goal_id")
     private Goal goal;
+
+    public static Checklist fromContent(String content) {
+        Checklist checklist = new Checklist();
+        checklist.setContent(content);
+
+        return checklist;
+    }
 }
