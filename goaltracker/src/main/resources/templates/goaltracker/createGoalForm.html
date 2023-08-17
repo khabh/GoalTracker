@@ -96,7 +96,7 @@
 <main>
     <section class="new-goal-form">
         <h2>Create a New Goal</h2>
-        <form>
+        <form action="/goal-tracker/goals" method="post">
             <label for="goal-name">Goal Name:</label>
             <input type="text" id="goal-name" name="name" required>
             <label for="goal-description">Description:</label>
@@ -107,7 +107,7 @@
             <div class="checklist-container">
                 <div id="checklistItems">
                     <div class="checklist-item">
-                        <input type="text" class="item-input" name="checklists[]" placeholder="내용을 작성하세요.">
+                        <input type="text" class="item-input" name="checklists" placeholder="내용을 작성하세요.">
                         <button type="button" class="remove-button" onclick="removeItem(this)">삭제</button>
                     </div>
                 </div>
@@ -138,7 +138,7 @@
         const newItem = document.createElement("div");
         newItem.className = "checklist-item";
         newItem.innerHTML = `
-                <input type="text" class="item-input" name="checklists[]" placeholder="내용을 입력하세요.">
+                <input type="text" class="item-input" name="checklists" placeholder="내용을 입력하세요.">
                 <button type="button" class="remove-button" onclick="removeItem(this)">삭제</button>
             `;
         checklistItems.appendChild(newItem);
