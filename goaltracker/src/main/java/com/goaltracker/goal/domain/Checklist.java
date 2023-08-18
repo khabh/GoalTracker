@@ -22,9 +22,10 @@ public class Checklist {
     @JoinColumn(name = "goal_id")
     private Goal goal;
 
-    public static Checklist fromContent(String content) {
+    public static Checklist from(String content, Goal goal) {
         Checklist checklist = new Checklist();
         checklist.setContent(content);
+        checklist.setGoal(goal);
 
         return checklist;
     }

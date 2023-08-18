@@ -9,8 +9,9 @@ public class GoalConverter {
     public static Goal convertToEntity(CreateGoalDTO createGoalDTO) {
         Goal goal = new Goal();
         goal.setName(createGoalDTO.getName());
+        goal.setDueDate(createGoalDTO.getDueDate());
         goal.setDescription(createGoalDTO.getDescription());
-        goal.setChecklists(createGoalDTO.getConvertedChecklists());
+        goal.setChecklists(createGoalDTO.getChecklists(goal));
 
         return goal;
     }

@@ -1,6 +1,7 @@
 package com.goaltracker.goal.dto;
 
 import com.goaltracker.goal.domain.Checklist;
+import com.goaltracker.goal.domain.Goal;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,10 +19,10 @@ public class CreateGoalDTO {
 
     private List<String> checklists;
 
-    public List<Checklist> getConvertedChecklists() {
+    public List<Checklist> getChecklists(Goal goal) {
         return checklists.stream()
                 .filter(checklist -> checklist != null && !checklist.trim().isEmpty())
-                .map(Checklist::fromContent)
+                .map(content -> Checklist.from(content, goal))
                 .toList();
     }
 
