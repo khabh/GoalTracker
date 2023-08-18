@@ -1,5 +1,6 @@
-package com.goaltracker.goal.domain;
+package com.goaltracker.checklist.domain;
 
+import com.goaltracker.goal.domain.Goal;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,5 +1,6 @@
 package com.goaltracker.goal.controller;
 
+import com.goaltracker.checklist.dto.CreateChecklistsDTO;
 import com.goaltracker.goal.dto.CreateGoalDTO;
 import com.goaltracker.goal.service.GoalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,8 @@ public class GoalController {
     }
 
     @PostMapping
-    public String createGoal(@ModelAttribute CreateGoalDTO createGoalDTO) {
-        goalService.createGoal(createGoalDTO);
+    public String createGoal(CreateGoalDTO createGoalDTO, CreateChecklistsDTO createChecklistsDTO) {
+        goalService.createGoal(createGoalDTO, createChecklistsDTO);
         return "redirect:/goal-tracker/goals/create";
     }
 

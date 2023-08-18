@@ -1,6 +1,6 @@
-package com.goaltracker.goal.repository;
+package com.goaltracker.checklist.repository;
 
-import com.goaltracker.goal.domain.Checklist;
+import com.goaltracker.checklist.domain.Checklist;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
