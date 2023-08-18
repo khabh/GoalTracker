@@ -1,33 +1,10 @@
 package com.goaltracker.goal.controller;
 
-import com.goaltracker.checklist.dto.CreateChecklistsDTO;
 import com.goaltracker.goal.dto.CreateGoalDTO;
-import com.goaltracker.goal.service.GoalService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import com.goaltracker.checklist.dto.CreateChecklistsDTO;
 
-@Controller
-@RequestMapping("/goal-tracker/goals")
-public class GoalController {
+public interface GoalController {
 
-    private final GoalService goalService;
-
-    @Autowired
-    public GoalController(GoalService goalService) {
-        this.goalService = goalService;
-    }
-
-    @GetMapping("/create")
-    public String showCreateGoalForm() {
-        return "/goaltracker/createGoalForm.html";
-    }
-
-    @PostMapping
-    public String createGoal(CreateGoalDTO createGoalDTO, CreateChecklistsDTO createChecklistsDTO) {
-        goalService.createGoal(createGoalDTO, createChecklistsDTO);
-        return "redirect:/goal-tracker/goals/create";
-    }
-
-
+    public String showCreateGoalForm();
+    public String createGoal(CreateGoalDTO createGoalDTO, CreateChecklistsDTO createChecklistsDTO);
 }
