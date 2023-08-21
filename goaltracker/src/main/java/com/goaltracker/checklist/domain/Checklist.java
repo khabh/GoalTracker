@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 
 @Entity
 @Table(name = "checklists")
@@ -17,11 +18,14 @@ public class Checklist {
     private Long id;
 
     private String content;
-    private boolean completion = false;
+    private boolean isDeletedFromDaily = false;
 
     @ManyToOne()
     @JoinColumn(name = "goal_id")
     private Goal goal;
+
+    @OneToMany(mappedBy = "checklist")
+    private List<ChecklistState> checklistStates;
 
     public static Checklist from(String content, Goal goal) {
         Checklist checklist = new Checklist();
