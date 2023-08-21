@@ -9,6 +9,9 @@ import com.goaltracker.goal.util.GoalConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Service
 public class GoalServiceImpl implements GoalService {
 
@@ -25,5 +28,10 @@ public class GoalServiceImpl implements GoalService {
         Goal goal = GoalConverter.convertToEntity(createGoalDTO);
         goalRepository.save(goal);
         checklistService.createChecklists(createChecklistsDTO, goal);
+    }
+
+    @Override
+    public List<Goal> getGoalsWithDueDateNotPassed() {
+        return goalRepository.getGoalsByDueDateIsGreaterThanEqual(LocalDate.now());
     }
 }

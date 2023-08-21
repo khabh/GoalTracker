@@ -25,5 +25,11 @@ public class Goal {
 
     @OneToMany(mappedBy = "goal")
     private List<Checklist> checklists;
+
+    public List<Checklist> getActiveChecklists() {
+        return checklists.stream()
+                .filter(Checklist::isCurrentlyActive)
+                .toList();
+    }
 }
 

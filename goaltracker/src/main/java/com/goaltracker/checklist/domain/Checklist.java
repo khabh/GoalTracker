@@ -27,6 +27,10 @@ public class Checklist {
     @OneToMany(mappedBy = "checklist")
     private List<ChecklistState> checklistStates;
 
+    public boolean isCurrentlyActive() {
+        return !isDeletedFromDaily;
+    }
+
     public static Checklist from(String content, Goal goal) {
         Checklist checklist = new Checklist();
         checklist.setContent(content);
