@@ -16,16 +16,10 @@ public class ChecklistHistoryServiceImpl implements ChecklistHistoryService {
     private final ChecklistStateService checklistStateService;
     private final ChecklistHistoryRepository checklistHistoryRepository;
 
-
+    @Autowired
     public ChecklistHistoryServiceImpl(GoalService goalService, ChecklistStateService checklistStateService, ChecklistHistoryRepository checklistHistoryRepository) {
         this.goalService = goalService;
         this.checklistStateService = checklistStateService;
-        this.checklistHistoryRepository = checklistHistoryRepository;
-    }
-
-    @Autowired
-    public ChecklistHistoryServiceImpl(GoalService goalService, ChecklistHistoryRepository checklistHistoryRepository) {
-        this.goalService = goalService;
         this.checklistHistoryRepository = checklistHistoryRepository;
     }
 
@@ -36,7 +30,7 @@ public class ChecklistHistoryServiceImpl implements ChecklistHistoryService {
                 .map(Goal::getActiveChecklists)
                 .map(ChecklistHistory::from)
                 .toList();
-        checklistStateService.saveChecklistStatesFromChecklistHistories(checklistHistories);
         checklistHistoryRepository.saveAll(checklistHistories);
+        checklistStateService.saveChecklistStatesFromChecklistHistories(checklistHistories);
     }
 }
