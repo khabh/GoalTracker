@@ -22,7 +22,7 @@ public class ChecklistServiceImpl implements ChecklistService {
 
     @Override
     public void createChecklists(CreateChecklistsDTO createChecklistsDTO, Goal goal) {
-        List<Checklist> checklists = ChecklistConverter.convertToEntities(createChecklistsDTO, goal);
+        List<Checklist> checklists = ChecklistConverter.toChecklists(createChecklistsDTO, goal);
         checklistRepository.saveAll(checklists);
     }
 }

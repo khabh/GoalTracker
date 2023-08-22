@@ -30,12 +30,4 @@ public class Checklist {
     public boolean isCurrentlyActive() {
         return !isDeletedFromDaily;
     }
-
-    public static Checklist from(String content, Goal goal) {
-        Checklist checklist = new Checklist();
-        checklist.setContent(content);
-        checklist.setGoal(goal);
-
-        return checklist;
-    }
 }
