@@ -2,11 +2,13 @@ package com.goaltracker.checklist.service;
 
 import com.goaltracker.checklist.domain.ChecklistHistory;
 import com.goaltracker.checklist.repository.ChecklistHistoryRepository;
+import com.goaltracker.checklist.util.ChecklistHistoryConverter;
 import com.goaltracker.goal.domain.Goal;
 import com.goaltracker.goal.service.GoalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -26,11 +28,9 @@ public class ChecklistHistoryServiceImpl implements ChecklistHistoryService {
     @Override
     public void addChecklistHistoryForAllGoals() {
         List<Goal> activeGoals = goalService.getGoalsWithDueDateNotPassed();
-        List<ChecklistHistory> checklistHistories = activeGoals.stream()
-                .map(Goal::getActiveChecklists)
-                .map(ChecklistHistory::from)
-                .toList();
+        List<ChecklistHistory> checklistHistories = ChecklistHistoryConverter.toChecklistHistories(LocalDate.now(), activeGoals.size());
+
         checklistHistoryRepository.saveAll(checklistHistories);
-        checklistStateService.saveChecklistStatesFromChecklistHistories(checklistHistories);
+        checklistStateService.addChecklistStatesFrom(checklistHistories, activeGoals);
     }
 }

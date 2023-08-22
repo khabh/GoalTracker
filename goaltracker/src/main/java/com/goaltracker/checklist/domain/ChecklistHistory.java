@@ -22,22 +22,4 @@ public class ChecklistHistory {
 
     @OneToMany(mappedBy = "checklistHistory", cascade = CascadeType.ALL)
     private List<ChecklistState> checklistStates = new ArrayList<>();
-
-    public static ChecklistHistory from(LocalDate date, List<Checklist> checklists) {
-        ChecklistHistory history = new ChecklistHistory();
-        history.setDate(date);
-
-        for (Checklist checklist : checklists) {
-            ChecklistState state = new ChecklistState();
-            state.setChecklist(checklist);
-            state.setChecklistHistory(history);
-            history.getChecklistStates().add(state);
-        }
-
-        return history;
-    }
-
-    public static ChecklistHistory from(List<Checklist> checklists) {
-        return ChecklistHistory.from(LocalDate.now(), checklists);
-    }
 }
