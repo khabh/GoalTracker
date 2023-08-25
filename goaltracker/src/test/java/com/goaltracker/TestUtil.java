@@ -45,6 +45,13 @@ public class TestUtil {
         return goalRepository.save(goal);
     }
 
+    public Goal createGoalWithChecklists(LocalDate dueDate, int checklistCount) {
+        Goal goal = createGoal(dueDate);
+        goal.setChecklists(createChecklists(goal, checklistCount));
+
+        return goal;
+    }
+
     public List<Checklist> createChecklists(Goal goal, int count) {
         return IntStream.range(0, count)
                 .mapToObj(index -> {

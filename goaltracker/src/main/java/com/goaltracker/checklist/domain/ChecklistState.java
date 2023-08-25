@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "checklist_states")
 @Getter
@@ -23,4 +25,17 @@ public class ChecklistState {
     private Checklist checklist;
 
     private boolean isCompleted = false;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChecklistState that = (ChecklistState) o;
+        return isCompleted == that.isCompleted && Objects.equals(id, that.id) && Objects.equals(checklistHistory, that.checklistHistory) && Objects.equals(checklist, that.checklist);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, checklistHistory, checklist, isCompleted);
+    }
 }
