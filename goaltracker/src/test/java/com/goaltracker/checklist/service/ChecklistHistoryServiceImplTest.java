@@ -1,7 +1,6 @@
 package com.goaltracker.checklist.service;
 
 import com.goaltracker.TestUtil;
-import com.goaltracker.checklist.domain.Checklist;
 import com.goaltracker.checklist.domain.ChecklistHistory;
 import com.goaltracker.checklist.dto.ChecklistHistoryContentStateDTO;
 import com.goaltracker.checklist.dto.ChecklistHistoryViewDTO;
@@ -14,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -38,20 +38,6 @@ class ChecklistHistoryServiceImplTest {
     @InjectMocks
     ChecklistHistoryServiceImpl checklistHistoryService;
 
-    private ChecklistHistory getChecklistHistory(LocalDate date) {
-        ChecklistHistory checklistHistory = new ChecklistHistory();
-        checklistHistory.setDate(date);
-
-        return checklistHistory;
-    }
-
-    private List<ChecklistHistoryContentStateDTO> getChecklistHistoryContentStates(List<Checklist> checklists) {
-        return checklists.stream()
-                .map(checklist ->
-                    new ChecklistHistoryContentStateDTO(LocalDate.now(), checklist.getId(), true, checklist.getContent()))
-                .collect(Collectors.toList());
-    }
-
     @Test
     void testAddChecklistHistoryForGoals() {
         // Given
@@ -75,15 +61,35 @@ class ChecklistHistoryServiceImplTest {
     @Test
     void shouldGetChecklistHistoriesFrom() {
         // Given
-        Goal goal = testUtil.createGoalWithChecklists(LocalDate.now(), 3);
-        List<ChecklistHistoryContentStateDTO> checklistHistoryContentStates = getChecklistHistoryContentStates(goal.getChecklists());
-        when(checklistHistoryRepository.findContentStateDTOsByGoal(goal)).thenReturn(checklistHistoryContentStates);
+        LocalDate today = LocalDate.now();
+        Goal goal = testUtil.createGoalWithChecklists(today, 3);
 
-       // When
+        List<ChecklistHistoryContentStateDTO> historyStates = new ArrayList<>();
+        historyStates.add(new ChecklistHistoryContentStateDTO(today, 1L, true, "content1"));
+        historyStates.add(new ChecklistHistoryContentStateDTO(today, 2L, true, "content2"));
+        historyStates.add(new ChecklistHistoryContentStateDTO(today.plusDays(1), 3L, false, "content3"));
+        when(checklistHistoryRepository.findContentStateDTOsByGoal(goal)).thenReturn(historyStates);
+
+        // When
         List<ChecklistHistoryViewDTO> result = checklistHistoryService.getChecklistHistoriesFrom(goal);
 
         // Then
         verify(checklistHistoryRepository).findContentStateDTOsByGoal(goal);
-        assertEquals(1, result.size());
+        assertEquals(2, result.size());
+
+        ChecklistHistoryViewDTO historyView = result.get(0);
+        assertEquals(today, historyView.getDate());
+        assertEquals(2, historyView.getChecklistStates().size());
+
+        historyView = result.get(1);
+        assertEquals(today.plusDays(1), historyView.getDate());
+        assertEquals(1, historyView.getChecklistStates().size());
+    }
+
+    private ChecklistHistory getChecklistHistory(LocalDate date) {
+        ChecklistHistory checklistHistory = new ChecklistHistory();
+        checklistHistory.setDate(date);
+
+        return checklistHistory;
     }
 }
