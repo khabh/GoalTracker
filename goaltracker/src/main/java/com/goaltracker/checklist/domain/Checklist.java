@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "checklists")
@@ -29,5 +30,18 @@ public class Checklist {
 
     public boolean isCurrentlyActive() {
         return !isDeletedFromDaily;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Checklist checklist = (Checklist) o;
+        return isDeletedFromDaily == checklist.isDeletedFromDaily && Objects.equals(id, checklist.id) && Objects.equals(content, checklist.content) && Objects.equals(goal, checklist.goal) && Objects.equals(checklistStates, checklist.checklistStates);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, content, isDeletedFromDaily, goal, checklistStates);
     }
 }
