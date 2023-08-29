@@ -20,20 +20,30 @@ public class GoalControllerImpl implements GoalController {
         this.goalService = goalService;
     }
 
+    @Override
     @GetMapping("/create")
     public String showCreateGoalForm() {
         return "/goaltracker/createGoalForm.html";
     }
 
+    @Override
     @PostMapping
     public String createGoal(@Valid CreateGoalDTO createGoalDTO, @Valid CreateChecklistsDTO createChecklistsDTO) {
         goalService.createGoal(createGoalDTO, createChecklistsDTO);
         return "redirect:/goal-tracker/goals/create";
     }
 
+    @Override
     @GetMapping("/{goalId}/performance")
     public String showGoalPerformance(@PathVariable Long goalId, Model model) {
         model.addAttribute("goalPerformance", goalService.getGoalPerformance(goalId));
         return "/goaltracker/goalPerformance.html";
+    }
+
+    @Override
+    @GetMapping("/active/users/{userId}")
+    public String showActiveGoals(@PathVariable Long userId, Model model) {
+        model.addAttribute("activeGoals", goalService.getActiveGoals());
+        return "/goaltracker/activeGoals.html";
     }
 }

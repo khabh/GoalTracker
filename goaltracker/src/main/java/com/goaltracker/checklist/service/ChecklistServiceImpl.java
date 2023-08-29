@@ -1,6 +1,7 @@
 package com.goaltracker.checklist.service;
 
 import com.goaltracker.checklist.domain.Checklist;
+import com.goaltracker.checklist.domain.ChecklistState;
 import com.goaltracker.checklist.dto.CreateChecklistsDTO;
 import com.goaltracker.checklist.dto.PopularCompletedChecklistDTO;
 import com.goaltracker.checklist.repository.ChecklistRepository;
@@ -19,6 +20,11 @@ public class ChecklistServiceImpl implements ChecklistService {
     @Autowired
     public ChecklistServiceImpl(ChecklistRepository checklistRepository) {
         this.checklistRepository = checklistRepository;
+    }
+
+    @Override
+    public List<ChecklistState> getDailyChecklistStatesToActiveGoals() {
+        return checklistRepository.findCurrentDateChecklistStatesByGoalDueDate();
     }
 
     @Override

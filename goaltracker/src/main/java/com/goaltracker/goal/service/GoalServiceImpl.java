@@ -1,11 +1,13 @@
 package com.goaltracker.goal.service;
 
+import com.goaltracker.checklist.domain.ChecklistState;
 import com.goaltracker.checklist.dto.ChecklistHistoryViewDTO;
 import com.goaltracker.checklist.dto.CreateChecklistsDTO;
 import com.goaltracker.checklist.dto.PopularCompletedChecklistDTO;
 import com.goaltracker.checklist.service.ChecklistHistoryService;
 import com.goaltracker.checklist.service.ChecklistService;
 import com.goaltracker.goal.domain.Goal;
+import com.goaltracker.goal.dto.ActiveGoalDTO;
 import com.goaltracker.goal.dto.CreateGoalDTO;
 import com.goaltracker.goal.dto.GoalPerformanceDTO;
 import com.goaltracker.goal.exception.GoalNotFoundException;
@@ -15,7 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class GoalServiceImpl implements GoalService {
@@ -32,8 +38,30 @@ public class GoalServiceImpl implements GoalService {
     }
 
     @Override
+    public List<ActiveGoalDTO> getActiveGoals() {
+        List<ChecklistState> checklistStates = checklistService.getDailyChecklistStatesToActiveGoals();
+        Map<Goal, List<ChecklistState>> groupedChecklistStates = groupChecklistStatesByGoal(checklistStates);
+
+        return groupedChecklistStates.entrySet()
+                .stream()
+                .map(activeGoal ->
+                        GoalConverter.toActiveGoalDTO(activeGoal.getKey(), activeGoal.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    private Map<Goal, List<ChecklistState>> groupChecklistStatesByGoal(List<ChecklistState> checklistStates) {
+        Map<Goal, List<ChecklistState>> groupedChecklistStates = new HashMap<>();
+        for (ChecklistState checklistState : checklistStates) {
+            Goal goal = checklistState.getChecklist().getGoal();
+            groupedChecklistStates.computeIfAbsent(goal, g -> new ArrayList<>()).add(checklistState);
+        }
+
+        return groupedChecklistStates;
+    }
+
+    @Override
     public void createGoal(CreateGoalDTO createGoalDTO, CreateChecklistsDTO createChecklistsDTO) {
-        Goal goal = GoalConverter.convertToEntity(createGoalDTO);
+        Goal goal = GoalConverter.toGoal(createGoalDTO);
         goalRepository.save(goal);
         checklistService.createChecklists(createChecklistsDTO, goal);
     }
