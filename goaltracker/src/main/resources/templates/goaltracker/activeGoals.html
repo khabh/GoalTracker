@@ -1,0 +1,73 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/4d76bf7bc7.js" crossorigin="anonymous"></script>
+    <link th:href="@{/css/style.css}" href="../css/style.css" rel="stylesheet">
+    <link th:href="@{/css/goal.main.css}" href="../css/style.css" rel="stylesheet">
+    <title>GoalTracker</title>
+</head>
+<body>
+<header>
+    <h1>Welcome to GoalTracker</h1>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Goals</a></li>
+            <li><a href="#">Profile</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <div class="summary-container">
+        <section class="user-profile-summary">
+            <div class="profile-image">
+                <img src="https://blog.kakaocdn.net/dn/bOjQ1n/btrLqc2YHQB/913MZQGPgTXhngMbWnicJK/img.jpg" alt="User Profile">
+            </div>
+            <div class="profile-details">
+                <h3 class="user-name">User Name</h3>
+                <div class="follow-stats">
+                    <p><i class="fa-solid fa-heart"></i> Followers <strong>1000</strong> · Following <strong>500</strong></p>
+                </div>
+                <p class="user-introduction">Passionate about learning and achieving goals!</p>
+
+                <div class="interest-tags">
+                    <span class="tag">#LanguageLearning</span>
+                    <span class="tag">#Fitness</span>
+                    <span class="tag">#Coding</span>
+                    <span class="tag">#Art</span>
+                    <span class="tag">#Fitness</span>
+                    <span class="tag">#Coding</span>
+                </div>
+
+            </div>
+        </section>
+        <section class="goal-summary">
+            <h2>Active Goals</h2>
+            <div th:each="goal : ${activeGoals}" class="goal-card">
+                <div class="goal-info-wrapper">
+                    <h3 th:text="${goal.name}" class="goal-title">개발자로 취업하기</h3>
+                    <p th:text="|Due Date: ${goal.dueDate}|">Due Date: 2023-12-31</p>
+                    <div style="float:right"><p>Progress: <strong th:text="|${goal.progress}%|">50%</strong></p></div>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 60%;" th:style="|width: ${goal.progress}%|"></div>
+                    </div>
+                </div>
+                <h3>Checklist</h3>
+                <div class="checklist-container">
+                    <label th:each="checklistState : ${goal.checklistStates}" class="checklist">
+                        <input th:if="${checklistState.isCompleted}" type="checkbox" checked="checked"/>
+                        <input th:if="${!checklistState.isCompleted}" type="checkbox"/>
+                        <span class="on"></span>
+                        <div th:text="${checklistState.content}" class="checklist-content">스프링 공부하기</div>
+                    </label>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+<footer>
+    <p>&copy; 2023 GoalTracker. All rights reserved.</p>
+</footer>
+</body>
+</html>
