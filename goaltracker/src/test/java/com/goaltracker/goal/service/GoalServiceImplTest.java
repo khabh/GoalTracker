@@ -3,6 +3,7 @@ package com.goaltracker.goal.service;
 import com.goaltracker.TestUtil;
 import com.goaltracker.checklist.domain.ChecklistState;
 import com.goaltracker.checklist.dto.CreateChecklistsDTO;
+import com.goaltracker.checklist.service.ChecklistHistoryService;
 import com.goaltracker.checklist.service.ChecklistService;
 import com.goaltracker.goal.domain.Goal;
 import com.goaltracker.goal.dto.ActiveGoalDTO;
@@ -16,9 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,6 +38,9 @@ class GoalServiceImplTest {
 
     @Mock
     ChecklistService checklistService;
+
+    @Mock
+    ChecklistHistoryService checklistHistoryService;
 
     @InjectMocks
     GoalServiceImpl goalService;
@@ -60,7 +67,7 @@ class GoalServiceImplTest {
     }
 
     @Test
-    void createGoal() {
+    void shouldCreateGoal() {
         // Given
         CreateGoalDTO createGoalDTO = getCreateGoalDTO();
         CreateChecklistsDTO createChecklistsDTO = new CreateChecklistsDTO();
@@ -79,7 +86,19 @@ class GoalServiceImplTest {
     }
 
     @Test
-    void getGoalPerformance() {
+    void shouldGetGoalPerformance() {
+        // Given
+        Goal goal = testUtil.createGoal(LocalDate.now());
+        when(goalRepository.findById(goal.getId())).thenReturn(Optional.of(goal));
+        when(checklistHistoryService.getChecklistHistoriesFrom(any())).thenReturn(new ArrayList<>());
+        when(checklistService.getPopularCompletedChecklists(any())).thenReturn(new ArrayList<>());
+
+        // When
+        goalService.getGoalPerformance(goal.getId());
+
+        // Then
+        verify(checklistHistoryService).getChecklistHistoriesFrom(goal);
+        verify(checklistService).getPopularCompletedChecklists(goal);
     }
 
     private CreateGoalDTO getCreateGoalDTO() {
