@@ -46,7 +46,7 @@
             <h2>Active Goals</h2>
             <div th:each="goal : ${activeGoals}" class="goal-card">
                 <div class="goal-info-wrapper">
-                    <h3 th:text="${goal.name}" class="goal-title">개발자로 취업하기</h3>
+                    <h3 th:text="${goal.name}" class="goal-title" th:onclick="|location.href='@{/goal-tracker/goals/{goalId}/performance(goalId=${goal.id})}'|">개발자로 취업하기</h3>
                     <p th:text="|Due Date: ${goal.dueDate}|">Due Date: 2023-12-31</p>
                     <div style="float:right"><p>Progress: <strong th:text="|${goal.progress}%|">50%</strong></p></div>
                     <div class="progress-bar">
