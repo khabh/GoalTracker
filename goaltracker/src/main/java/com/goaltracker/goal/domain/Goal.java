@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "goals")
@@ -26,10 +27,17 @@ public class Goal {
     @OneToMany(mappedBy = "goal")
     private List<Checklist> checklists;
 
-    public List<Checklist> getActiveChecklists() {
-        return checklists.stream()
-                .filter(Checklist::isCurrentlyActive)
-                .toList();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Goal goal = (Goal) o;
+        return Float.compare(goal.progress, progress) == 0 && Objects.equals(id, goal.id) && Objects.equals(name, goal.name) && Objects.equals(description, goal.description) && Objects.equals(dueDate, goal.dueDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, dueDate, progress);
     }
 }
 
