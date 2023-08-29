@@ -6,6 +6,7 @@ import com.goaltracker.checklist.dto.ChecklistHistoryContentStateDTO;
 import com.goaltracker.checklist.dto.ChecklistHistoryViewDTO;
 import com.goaltracker.checklist.repository.ChecklistHistoryRepository;
 import com.goaltracker.goal.domain.Goal;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-
+@Transactional
 class ChecklistHistoryServiceImplTest {
 
     @Autowired

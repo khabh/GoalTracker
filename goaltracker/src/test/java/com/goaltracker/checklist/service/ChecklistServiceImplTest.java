@@ -5,6 +5,7 @@ import com.goaltracker.checklist.domain.Checklist;
 import com.goaltracker.checklist.dto.CreateChecklistsDTO;
 import com.goaltracker.checklist.repository.ChecklistRepository;
 import com.goaltracker.goal.domain.Goal;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -21,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
+@Transactional
 class ChecklistServiceImplTest {
 
     @Mock
