@@ -13,6 +13,7 @@ import com.goaltracker.goal.dto.GoalPerformanceDTO;
 import com.goaltracker.goal.exception.GoalNotFoundException;
 import com.goaltracker.goal.repository.GoalRepository;
 import com.goaltracker.goal.util.GoalConverter;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 public class GoalServiceImpl implements GoalService {
 
+    private final ModelMapper modelMapper = new ModelMapper();
     private final GoalRepository goalRepository;
     private final ChecklistService checklistService;
     private final ChecklistHistoryService checklistHistoryService;
@@ -61,7 +63,7 @@ public class GoalServiceImpl implements GoalService {
 
     @Override
     public void createGoal(CreateGoalDTO createGoalDTO, CreateChecklistsDTO createChecklistsDTO) {
-        Goal goal = GoalConverter.toGoal(createGoalDTO);
+        Goal goal = modelMapper.map(createGoalDTO, Goal.class);
         goalRepository.save(goal);
         checklistService.createChecklists(createChecklistsDTO, goal);
     }

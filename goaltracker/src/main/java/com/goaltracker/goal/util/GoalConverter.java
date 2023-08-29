@@ -4,7 +4,6 @@ import com.goaltracker.checklist.domain.ChecklistState;
 import com.goaltracker.checklist.dto.vo.ChecklistStateVO;
 import com.goaltracker.goal.domain.Goal;
 import com.goaltracker.goal.dto.ActiveGoalDTO;
-import com.goaltracker.goal.dto.CreateGoalDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,14 +27,5 @@ public class GoalConverter {
                 .dueDate(goal.getDueDate())
                 .checklistStates(checklistStateVOs)
                 .build();
-    }
-
-    public static Goal toGoal(CreateGoalDTO createGoalDTO) {
-        Goal goal = new Goal();
-        goal.setName(createGoalDTO.getName());
-        goal.setDueDate(createGoalDTO.getDueDate());
-        goal.setDescription(createGoalDTO.getDescription());
-
-        return goal;
     }
 }
