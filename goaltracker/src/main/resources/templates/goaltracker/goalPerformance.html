@@ -1,0 +1,100 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoalTracker - Goal History</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.3/dist/chart.umd.min.js"></script>
+    <link th:href="@{/css/style.css}" href="../css/style.css" rel="stylesheet">
+    <link th:href="@{/css/goal.performance.css}" href="../css/style.css" rel="stylesheet">
+</head>
+<body>
+<header>
+    <h1>GoalTracker</h1>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#">Goals</a></li>
+            <li><a href="#">Profile</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+
+    <div class="container">
+        <div class="history-header">
+            <h2 class="history-title" th:text="|${goalPerformance.name} - History|">Exercise Regularly - History</h2>
+            <p class="goal-description" th:text="|Goal Description: ${goalPerformance.description}|">Goal Description: Exercise regularly to stay healthy and fit.</p>
+        </div>
+
+        <section class="stat-container">
+            <div class="stat">
+                <div class="popular-items">
+                    <h2>Popular Completed Items</h2>
+                    <ol class="popularity-list">
+                        <li th:each="checklist : ${goalPerformance.popularCompletedChecklists}">
+                            <span class="item-name" th:text="${checklist.content}">Go for a jog</span>
+                            <span class="item-count" th:text="|(${checklist.count} times)|">(42 times)</span>
+                        </li>
+                    </ol>
+                </div>
+                <div class="progress-container">
+                    <input id="progress" th:value="${goalPerformance.progress}" value="100" hidden>
+                    <h2 th:text="|Progress (${goalPerformance.progress}/100)|">Progress (25/100)</h2>
+                    <canvas id="progressChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="history-container">
+        <div class="history-items">
+            <div class="timeline">
+                <div class="timeline-item" th:each="checklistHistory : ${goalPerformance.checklistHistories}">
+                    <p class="timeline-date" th:text="${checklistHistory.date}">2023-08-03</p>
+                    <div class="timeline-content">
+                        <label th:each="checklistState : ${checklistHistory.checklistStates}" class="checklist">
+                            <input th:if="${checklistState.isCompleted}" type="checkbox" checked="checked" disabled/>
+                            <input th:if="${!checklistState.isCompleted}" type="checkbox" disabled/>
+                            <span class="on"></span>
+                            <div th:text="${checklistState.content}"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </section>
+    </div>
+</main>
+
+<footer class="footer">
+    <p>&copy; 2023 GoalTracker. All rights reserved.</p>
+</footer>
+</body>
+<script>
+    var ctx = document.getElementById('progressChart').getContext('2d');
+
+    const progress = document.getElementById('progress').getAttribute('value');
+    const remain = 100 - progress;
+
+    var data = {
+        datasets: [{
+            data: [progress, remain], // 데이터: [진행률, 남은 부분]
+            backgroundColor: ['#E76161', '#dddddd'], // 진행률 색상과 남은 부분의 색상
+            borderWidth: 0 // 테두리 너비
+        }],
+    };
+
+    var options = {
+        cutout: '50%', // 중앙 부분 빈 공간의 크기
+        tooltips: { enabled: false }, // 툴팁 비활성화
+        responsive: false, // 반응형 비활성화
+        maintainAspectRatio: false // 가로 세로 비율 유지 비활성화
+    };
+
+    var progressChart = new Chart(ctx, {
+        type: 'doughnut', // 원형 그래프 유형
+        data: data,
+        options: options
+    });
+</script>
+</html>
