@@ -24,6 +24,13 @@ public class ChecklistStateServiceImpl implements ChecklistStateService {
     }
 
     @Override
+    public void updateChecklistState(Long checklistStateId, boolean isCompleted) {
+        ChecklistState checklistState = checklistStateRepository.findById(checklistStateId).orElseThrow();
+        checklistState.setCompleted(isCompleted);
+        checklistStateRepository.save(checklistState);
+    }
+
+    @Override
     public void addChecklistStatesFrom(List<ChecklistHistory> checklistHistories, List<Goal> goals) {
         List<ChecklistState> checklistStates = IntStream.range(0, goals.size())
                 .mapToObj(index -> {

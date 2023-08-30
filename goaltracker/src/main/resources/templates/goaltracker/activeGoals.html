@@ -46,20 +46,23 @@
             <h2>Active Goals</h2>
             <div th:each="goal : ${activeGoals}" class="goal-card">
                 <div class="goal-info-wrapper">
-                    <h3 th:text="${goal.name}" class="goal-title" th:onclick="|location.href='@{/goal-tracker/goals/{goalId}/performance(goalId=${goal.id})}'|">개발자로 취업하기</h3>
+                    <h3 th:text="${goal.name}" class="goal-title" th:onclick="|location.href='@{/goal-tracker/goals/{goalId}/performance(goalId=${goal.id})}'|"></h3>
                     <p th:text="|Due Date: ${goal.dueDate}|">Due Date: 2023-12-31</p>
-                    <div style="float:right"><p>Progress: <strong th:text="|${goal.progress}%|">50%</strong></p></div>
+                    <div style="float:right"><p>Progress: <strong th:text="|${goal.progress}%|"></strong></p></div>
                     <div class="progress-bar">
-                        <div class="progress" style="width: 60%;" th:style="|width: ${goal.progress}%|"></div>
+                        <div class="progress" th:style="|width: ${goal.progress}%|"></div>
                     </div>
                 </div>
                 <h3>Checklist</h3>
                 <div class="checklist-container">
                     <label th:each="checklistState : ${goal.checklistStates}" class="checklist">
-                        <input th:if="${checklistState.isCompleted}" type="checkbox" checked="checked"/>
-                        <input th:if="${!checklistState.isCompleted}" type="checkbox"/>
-                        <span class="on"></span>
-                        <div th:text="${checklistState.content}" class="checklist-content">스프링 공부하기</div>
+                        <form th:action="@{/goal-tracker/checklist-states/{checklistStateId}(checklistStateId=${checklistState.id})}" method="patch">
+                            <input type="hidden" th:name="isCompleted">
+                            <input th:if="${checklistState.isCompleted}" th:name="isCompleted" type="checkbox" checked="checked" onchange="toggleAndSubmit(this.form);"/>
+                            <input th:if="${!checklistState.isCompleted}" th:name="isCompleted" type="checkbox" onchange="toggleAndSubmit(this.form);"/>
+                            <span class="on"></span>
+                            <div th:text="${checklistState.content}" class="checklist-content"></div>
+                        </form>
                     </label>
                 </div>
             </div>
@@ -70,4 +73,15 @@
     <p>&copy; 2023 GoalTracker. All rights reserved.</p>
 </footer>
 </body>
+<script>
+    function toggleAndSubmit(form) {
+        const checkbox = form.querySelector('input[type="checkbox"]')
+        const hiddenInput = form.querySelector('input[type="hidden"]');
+        hiddenInput.value = checkbox.checked ? "true" : "false";
+        fetch(form.action, {
+            method: 'PATCH',
+            body: new FormData(form)
+        });
+    }
+</script>
 </html>

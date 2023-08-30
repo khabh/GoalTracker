@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ChecklistStateService {
     void addChecklistStatesFrom(List<ChecklistHistory> checklistHistories, List<Goal> goals);
+    void updateChecklistState(Long checklistStateId, boolean isCompleted);
 }
