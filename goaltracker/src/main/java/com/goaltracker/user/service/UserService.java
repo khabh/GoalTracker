@@ -1,8 +1,9 @@
 package com.goaltracker.user.service;
 
-import com.goaltracker.auth.dto.InitialPasswordDTO;
-import com.goaltracker.user.dto.CreateUserDTO;
+import com.goaltracker.auth.domain.UserCredential;
+import com.goaltracker.auth.dto.UserSignUpDTO;
+import com.goaltracker.user.domain.User;
 
 public interface UserService {
-    String signUpNewUser(CreateUserDTO createUserDTO, InitialPasswordDTO initialPasswordDTO);
+    User signUpUserWithCredential(UserSignUpDTO userSignUpDTO, UserCredential userCredential);
 }

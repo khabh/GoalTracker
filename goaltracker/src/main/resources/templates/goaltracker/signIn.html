@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link th:href="@{/css/style.css}" rel="stylesheet">
+  <link th:href="@{/css/auth.main.css}" rel="stylesheet">
+  <title>SignIn - GoalTracker</title>
+</head>
+<body>
+<header>
+  <h1>GoalTracker</h1>
+  <nav>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Goals</a></li>
+      <li><a href="#">Profile</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="auth-container">
+  <div class="sign-in-wrapper">
+    <div class="wave-container">
+      <div class="wave"></div>
+    </div>
+    <div class="auth-form">
+      <h2>Sign In</h2>
+      <br>
+      <form action="/goal-tracker/auth/sign-in" method="post">
+        <label for="email">Email</label>
+        <input class="user-input" type="email" id="email" name="email" required>
+
+        <label for="password">Password</label>
+        <input class="user-input" type="password" id="password" name="password" required>
+
+        <button type="submit">로그인</button>
+      </form>
+      <p>회원이 아니신가요? <a th:href="@{/goal-tracker/auth/sign-up}">회원가입</a></p>
+    </div>
+
+  </div>
+
+</main>
+<footer>
+  <p>&copy; 2023 GoalTracker. All rights reserved.</p>
+</footer>
+</body>
+</html>

@@ -26,23 +26,22 @@
     <div class="auth-form">
       <h2>Sign Up</h2>
       <br>
-      <form action="/goal-tracker/users" method="post">
+      <form th:object="${userSignUpDTO}" action="/goal-tracker/auth/sign-up" method="post">
         <label for="username">Username</label>
-        <input type="text" id="username" name="username"
-               th:value="${createUserDTO != null ? createUserDTO.username : ''}"
-               th:class="${createUserDTO != null && #fields.hasErrors('createUserDTO.username') ? 'error-input' : 'user-input'}" required>
-        <span th:if="${createUserDTO != null && #fields.hasErrors('createUserDTO.username')}" th:errors="*{createUserDTO.username}" class="error-message"></span>
+        <input  type="text" id="username" name="username" th:value="${userSignUpDTO.username}"
+               th:class="${#fields.hasErrors('username') ? 'error-input' : 'user-input'}" required>
+        <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error-message"></span>
 
         <label for="email">Email</label>
         <input type="email" id="email" name="email"
-               th:value="${createUserDTO != null ? createUserDTO.email : ''}"
-               th:class="${createUserDTO != null && #fields.hasErrors('createUserDTO.email') ? 'error-input' : 'user-input'}" required>
-        <span th:if="${createUserDTO != null && #fields.hasErrors('createUserDTO.email')}" th:errors="*{createUserDTO.email}" class="error-message"></span>
+               th:value="${userSignUpDTO.email}"
+               th:class="${#fields.hasErrors('email') ? 'error-input' : 'user-input'}" required>
+        <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-message"></span>
 
         <label for="password">Password</label>
         <input type="password" id="password" name="password"
-               th:class="${initialPasswordDTO != null && #fields.hasErrors('initialPasswordDTO.password') ? 'error-input' : 'user-input'}" required>
-        <span th:if="${initialPasswordDTO != null && #fields.hasErrors('initialPasswordDTO.password')}" th:errors="*{initialPasswordDTO.password}" class="error-message"></span>
+               th:class="${#fields.hasErrors('password') ? 'error-input' : 'user-input'}" required>
+        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error-message"></span>
         <button type="submit">회원가입</button>
       </form>
       <p>이미 계정이 있으신가요? <a th:href="@{/goal-tracker/auth/sign-in}">로그인</a></p>

@@ -2,12 +2,17 @@ package com.goaltracker.auth.service;
 
 import com.goaltracker.auth.domain.Authority;
 import com.goaltracker.auth.domain.UserCredential;
-import com.goaltracker.auth.dto.InitialPasswordDTO;
+import com.goaltracker.auth.dto.SignInDTO;
+import com.goaltracker.auth.dto.UserSignUpDTO;
 import com.goaltracker.auth.repository.UserCredentialRepository;
+import com.goaltracker.auth.token.EmailPasswordAuthenticationToken;
 import com.goaltracker.auth.util.JwtProvider;
 import com.goaltracker.auth.util.UserCredentialConverter;
 import com.goaltracker.user.domain.User;
+import com.goaltracker.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,21 +26,33 @@ public class UserCredentialServiceImpl implements UserCredentialService {
 
     private final UserCredentialRepository userCredentialRepository;
     private final AuthorityService authorityService;
+    private final UserService userService;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserCredentialServiceImpl(UserCredentialRepository userCredentialRepository, AuthorityService authorityService, JwtProvider tokenProvider, PasswordEncoder passwordEncoder) {
+    public UserCredentialServiceImpl(UserCredentialRepository userCredentialRepository, AuthorityService authorityService,
+                                     UserService userService, AuthenticationManagerBuilder authenticationManagerBuilder,
+                                     JwtProvider tokenProvider, PasswordEncoder passwordEncoder) {
         this.userCredentialRepository = userCredentialRepository;
         this.authorityService = authorityService;
+        this.userService = userService;
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.tokenProvider = tokenProvider;
         this.passwordEncoder = passwordEncoder;
     }
 
-
     @Override
-    public UserCredential generateSaltedPassword(InitialPasswordDTO passwordDTO) {
-        String hashedPassword = passwordEncoder.encode(passwordDTO.getPassword());
+    public String signUpAndAuthenticateUser(UserSignUpDTO userSignUpDTO) {
+        UserCredential userCredential = saveCredentialWithHashedPassword(userSignUpDTO.getPassword());
+        User user = userService.signUpUserWithCredential(userSignUpDTO, userCredential);
+
+        return tokenProvider.generateToken(user);
+    }
+
+    private UserCredential saveCredentialWithHashedPassword(String rawPassword) {
+        String hashedPassword = passwordEncoder.encode(rawPassword);
         Set<Authority> authorities = authorityService.getOrCreateAuthorities(List.of(USER));
         UserCredential userCredential = UserCredentialConverter.toUserCredential(hashedPassword, authorities);
 
@@ -43,7 +60,10 @@ public class UserCredentialServiceImpl implements UserCredentialService {
     }
 
     @Override
-    public String generateToken(User user) {
-        return tokenProvider.generateToken(user);
+    public String authenticateUserWithJwtToken(SignInDTO signInDTO) {
+        EmailPasswordAuthenticationToken authenticationToken = new EmailPasswordAuthenticationToken(signInDTO.getEmail(), signInDTO.getPassword());
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+        return tokenProvider.generateToken(authentication);
     }
 }

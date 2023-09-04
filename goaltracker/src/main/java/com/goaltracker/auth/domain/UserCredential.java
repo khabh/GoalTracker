@@ -19,7 +19,7 @@ public class UserCredential {
 
     private String hashedPassword;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_credential_authorities",
             joinColumns = {@JoinColumn(name = "user_credential_id", referencedColumnName = "id")},
