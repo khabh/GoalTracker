@@ -68,6 +68,7 @@ public class AuthControllerImpl implements AuthController {
 
     private void addTokenCookieToResponse(String token, HttpServletResponse httpServletResponse) {
         Cookie cookie = new Cookie(Constants.AUTHORIZATION_HEADER, token);
+        cookie.setPath("/");
         cookie.setMaxAge(7 * 24 * 60 * 60);
         httpServletResponse.addCookie(cookie);
     }

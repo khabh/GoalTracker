@@ -5,6 +5,7 @@ import com.goaltracker.goal.dto.CreateGoalDTO;
 import com.goaltracker.goal.service.GoalService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +22,10 @@ public class GoalControllerImpl implements GoalController {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('USER', 'ROLE_USER')")
     @GetMapping("/create")
     public String showCreateGoalForm() {
-        return "/goaltracker/createGoalForm.html";
+        return "goaltracker/createGoalForm";
     }
 
     @Override
@@ -37,13 +39,13 @@ public class GoalControllerImpl implements GoalController {
     @GetMapping("/{goalId}/performance")
     public String showGoalPerformance(@PathVariable Long goalId, Model model) {
         model.addAttribute("goalPerformance", goalService.getGoalPerformance(goalId));
-        return "/goaltracker/goalPerformance.html";
+        return "goaltracker/goalPerformance";
     }
 
     @Override
     @GetMapping("/active/users/{userId}")
     public String showActiveGoals(@PathVariable Long userId, Model model) {
         model.addAttribute("activeGoals", goalService.getActiveGoals());
-        return "/goaltracker/activeGoals.html";
+        return "goaltracker/activeGoals";
     }
 }

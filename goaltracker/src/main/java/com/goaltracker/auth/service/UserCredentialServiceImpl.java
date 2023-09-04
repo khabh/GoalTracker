@@ -6,7 +6,7 @@ import com.goaltracker.auth.dto.SignInDTO;
 import com.goaltracker.auth.dto.UserSignUpDTO;
 import com.goaltracker.auth.repository.UserCredentialRepository;
 import com.goaltracker.auth.token.EmailPasswordAuthenticationToken;
-import com.goaltracker.auth.util.JwtProvider;
+import com.goaltracker.auth.util.TokenManager;
 import com.goaltracker.auth.util.UserCredentialConverter;
 import com.goaltracker.user.domain.User;
 import com.goaltracker.user.service.UserService;
@@ -28,18 +28,18 @@ public class UserCredentialServiceImpl implements UserCredentialService {
     private final AuthorityService authorityService;
     private final UserService userService;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final JwtProvider tokenProvider;
+    private final TokenManager tokenManager;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserCredentialServiceImpl(UserCredentialRepository userCredentialRepository, AuthorityService authorityService,
                                      UserService userService, AuthenticationManagerBuilder authenticationManagerBuilder,
-                                     JwtProvider tokenProvider, PasswordEncoder passwordEncoder) {
+                                     TokenManager tokenManager, PasswordEncoder passwordEncoder) {
         this.userCredentialRepository = userCredentialRepository;
         this.authorityService = authorityService;
         this.userService = userService;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
-        this.tokenProvider = tokenProvider;
+        this.tokenManager = tokenManager;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -48,7 +48,7 @@ public class UserCredentialServiceImpl implements UserCredentialService {
         UserCredential userCredential = saveCredentialWithHashedPassword(userSignUpDTO.getPassword());
         User user = userService.signUpUserWithCredential(userSignUpDTO, userCredential);
 
-        return tokenProvider.generateToken(user);
+        return tokenManager.generateToken(user.getUsername(), userCredential);
     }
 
     private UserCredential saveCredentialWithHashedPassword(String rawPassword) {
@@ -64,6 +64,6 @@ public class UserCredentialServiceImpl implements UserCredentialService {
         EmailPasswordAuthenticationToken authenticationToken = new EmailPasswordAuthenticationToken(signInDTO.getEmail(), signInDTO.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        return tokenProvider.generateToken(authentication);
+        return tokenManager.generateToken(authentication);
     }
 }
