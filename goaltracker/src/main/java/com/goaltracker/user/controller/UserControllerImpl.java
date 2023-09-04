@@ -1,8 +1,11 @@
 package com.goaltracker.user.controller;
 
 import com.goaltracker.auth.dto.InitialPasswordDTO;
+import com.goaltracker.config.Constants;
 import com.goaltracker.user.dto.CreateUserDTO;
 import com.goaltracker.user.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,7 +36,8 @@ public class UserControllerImpl implements UserController {
     @Override
     @PostMapping
     public String signUpUser(@Valid CreateUserDTO createUserDTO, BindingResult createUserResult,
-                             @Valid InitialPasswordDTO initialPasswordDTO, BindingResult initialPasswordResult, RedirectAttributes redirectAttributes) {
+                             @Valid InitialPasswordDTO initialPasswordDTO, BindingResult initialPasswordResult,
+                             RedirectAttributes redirectAttributes, HttpServletResponse httpServletResponse) {
         if (createUserResult.hasErrors() || initialPasswordResult.hasErrors()) {
             redirectAttributes.addFlashAttribute( BindingResult.MODEL_KEY_PREFIX + "createUserDTO", createUserResult);
             redirectAttributes.addFlashAttribute("createUserDTO", createUserDTO);
@@ -42,6 +46,12 @@ public class UserControllerImpl implements UserController {
             redirectAttributes.addFlashAttribute("initialPasswordDTO", initialPasswordDTO);
             return "redirect:/goal-tracker/users/create";
         }
-        return null;
+
+        String token = userService.signUpNewUser(createUserDTO, initialPasswordDTO);
+        Cookie cookie = new Cookie(Constants.AUTHORIZATION_HEADER, token);
+        cookie.setMaxAge(7 * 24 * 60 * 60);
+        httpServletResponse.addCookie(cookie);
+
+        return "goaltracker/goals";
     }
 }

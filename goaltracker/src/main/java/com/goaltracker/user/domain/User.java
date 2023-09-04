@@ -1,5 +1,6 @@
 package com.goaltracker.user.domain;
 
+import com.goaltracker.auth.domain.UserCredential;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,17 +18,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name = "user_profile_id")
+    private UserProfile userProfile;
+
+    @OneToOne
+    @JoinColumn(name = "user_credential_id")
+    private UserCredential userCredential;
+
+    private String username;
+    private String email;
+
     @OneToMany(mappedBy = "follower")
     private Set<FollowRelation> following = new HashSet<>();
 
     @OneToMany(mappedBy = "followee")
     private Set<FollowRelation> followers = new HashSet<>();
-
-    private String username;
-    private String email;
-    private String password;
-
-    @OneToOne
-    @JoinColumn(name = "user_profile_id")
-    private UserProfile userProfile;
 }
