@@ -3,8 +3,10 @@ package com.goaltracker.user.service;
 import com.goaltracker.auth.domain.UserCredential;
 import com.goaltracker.user.domain.User;
 import com.goaltracker.auth.dto.UserSignUpDTO;
+import com.goaltracker.user.dto.UserProfileEditViewDTO;
 import com.goaltracker.user.repository.UserRepository;
 import com.goaltracker.user.util.UserConverter;
+import com.goaltracker.user.util.UserProfileConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,5 +25,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(createdUser);
 
         return createdUser;
+    }
+
+    @Override
+    public UserProfileEditViewDTO getEditViewWithoutProfileByUsername(String username){
+        String email = userRepository.findEmailByUsername(username).orElseThrow();
+        return UserProfileConverter.toUserProfileEditView(username, email);
     }
 }

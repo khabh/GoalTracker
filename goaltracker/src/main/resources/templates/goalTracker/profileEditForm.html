@@ -32,7 +32,7 @@
                 type="text"
                 id="username"
                 name="username"
-                value="JohnDoe"
+                th:value="${userProfile.username}"
                 required
         />
       </div>
@@ -42,7 +42,7 @@
                 type="email"
                 id="email"
                 name="email"
-                value="email"
+                th:value="${userProfile.email}"
                 readonly
         />
       </div>
@@ -52,11 +52,14 @@
                 id="self-introduction"
                 name="self-introduction"
                 rows="4"
+                th:text="${userProfile.introduction} != null ? ${userProfile.introduction} : ''"
         ></textarea>
       </div>
       <div class="form-group">
         <label for="interests">관심 태그</label>
-        <input id="interests" name="interests" placeholder="" />
+        <input id="interests" name="interests" placeholder=""
+               th:value="${userProfile.interests} != null ? ${userProfile.interests} : ''"
+        />
       </div>
       <div class="form-actions">
         <button id="save-button" type="submit">저장하기</button>
