@@ -1,0 +1,60 @@
+.profile-form-container {
+    max-width: 1200px;
+    display: flex;
+    margin: 0 auto;
+    justify-content: center;
+}
+.form-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+input[type="email"] {
+    background-color: #ddd;
+}
+.tagify {
+    width: 100%;
+    background-color: white;
+    border-radius: 4px;
+}
+.form-actions {
+    margin-left: auto;
+}
+.form-group img {
+    width: 320px;
+    height: 320px;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    margin: 2rem auto;
+}
+
+.profile-form {
+    width: 50%;
+    margin: 1rem 3rem;
+    background-color: #f5f5f5;
+    padding: 3rem;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}

@@ -1,0 +1,87 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GoalTracker - Edit Profile</title>
+  <link th:href="@{/css/style.css}" rel="stylesheet" />
+  <link href="https://unpkg.com/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css"/>
+  <link th:href="@{/css/profile.edit.css}" rel="stylesheet">
+  <script src="https://unpkg.com/@yaireo/tagify"></script>
+</head>
+<body>
+<header>
+  <h1>GoalTracker</h1>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#">Goals</a></li>
+      <li><a href="#">Profile</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section class="profile-form-container">
+    <form id="profile-form" class="profile-form">
+      <div class="form-group">
+          <img src="https://blog.kakaocdn.net/dn/bOjQ1n/btrLqc2YHQB/913MZQGPgTXhngMbWnicJK/img.jpg" alt="User Profile"/>
+      </div>
+      <div class="form-group">
+        <label for="username">사용자 이름</label>
+        <input
+                type="text"
+                id="username"
+                name="username"
+                value="JohnDoe"
+                required
+        />
+      </div>
+      <div class="form-group">
+        <label for="email">이메일</label>
+        <input
+                type="email"
+                id="email"
+                name="email"
+                value="email"
+                readonly
+        />
+      </div>
+      <div class="form-group">
+        <label for="self-introduction">자기소개</label>
+        <textarea
+                id="self-introduction"
+                name="self-introduction"
+                rows="4"
+        ></textarea>
+      </div>
+      <div class="form-group">
+        <label for="interests">관심 태그</label>
+        <input id="interests" name="interests" placeholder="" />
+      </div>
+      <div class="form-actions">
+        <button id="save-button" type="submit">저장하기</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<footer class="footer">
+  <p>&copy; 2023 GoalTracker. All rights reserved.</p>
+</footer>
+<script>
+  new Tagify(document.getElementById('interests'));
+  document.addEventListener("DOMContentLoaded", function() {
+    const saveButton = document.getElementById("save-button");
+    saveButton.addEventListener("click", function(event) {
+      event.preventDefault();
+      const tags = document.getElementsByClassName('tagify__tag');
+      for (let i = 0; i < tags.length; i++) {
+        tags[i].setAttribute('name', 'interests');
+      }
+      const form = document.getElementById('profile-form');
+      form.submit();
+    });
+  });
+</script>
+</body>
+</html>
