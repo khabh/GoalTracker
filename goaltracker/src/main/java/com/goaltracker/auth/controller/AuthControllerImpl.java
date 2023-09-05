@@ -30,7 +30,7 @@ public class AuthControllerImpl implements AuthController {
     @Override
     @GetMapping("/sign-in")
     public String showSignInForm() {
-        return "goaltracker/signIn";
+        return "goalTracker/signIn";
     }
 
     @Override
@@ -47,7 +47,7 @@ public class AuthControllerImpl implements AuthController {
     public String showSignUpForm(Model model) {
         if (model.getAttribute("userSignUpDTO") == null)
             model.addAttribute(new UserSignUpDTO());
-        return "goaltracker/signUp";
+        return "goalTracker/signUp";
     }
 
     @Override

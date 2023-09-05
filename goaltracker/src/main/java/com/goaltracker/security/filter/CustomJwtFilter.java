@@ -41,6 +41,8 @@ public class CustomJwtFilter extends GenericFilterBean {
     }
 
     private String extractToken(HttpServletRequest request) {
+        if (request.getCookies() == null)
+            return null;
         Cookie authorizationCookie = Arrays.stream(request.getCookies())
                 .filter(this::isAuthorizationCookie)
                 .findFirst().orElse(null);

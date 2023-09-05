@@ -25,7 +25,7 @@ public class GoalControllerImpl implements GoalController {
     @PreAuthorize("hasAnyAuthority('USER', 'ROLE_USER')")
     @GetMapping("/create")
     public String showCreateGoalForm() {
-        return "goaltracker/createGoalForm";
+        return "goalTracker/createGoalForm";
     }
 
     @Override
@@ -39,13 +39,13 @@ public class GoalControllerImpl implements GoalController {
     @GetMapping("/{goalId}/performance")
     public String showGoalPerformance(@PathVariable Long goalId, Model model) {
         model.addAttribute("goalPerformance", goalService.getGoalPerformance(goalId));
-        return "goaltracker/goalPerformance";
+        return "goalTracker/goalPerformance";
     }
 
     @Override
     @GetMapping("/active/users/{userId}")
     public String showActiveGoals(@PathVariable Long userId, Model model) {
         model.addAttribute("activeGoals", goalService.getActiveGoals());
-        return "goaltracker/activeGoals";
+        return "goalTracker/activeGoals";
     }
 }
