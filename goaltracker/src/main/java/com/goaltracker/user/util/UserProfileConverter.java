@@ -1,30 +1,35 @@
 package com.goaltracker.user.util;
 
-import com.goaltracker.user.domain.Interest;
 import com.goaltracker.user.domain.User;
 import com.goaltracker.user.domain.UserProfile;
+import com.goaltracker.user.domain.UserProfileInterest;
+import com.goaltracker.user.dto.UserProfileChangeDTO;
 import com.goaltracker.user.dto.UserProfileEditViewDTO;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserProfileConverter {
 
     private UserProfileConverter() {}
 
-    private static String flattenInterests(Collection<Interest> interests) {
-        return interests.stream()
-                .map(Interest::getTagName).collect(Collectors.joining(", "));
+    private static String flattenInterests(List<UserProfileInterest> userProfileInterests) {
+        return userProfileInterests.stream()
+                .map(userProfileInterest -> userProfileInterest.getInterest().getTagName())
+                .collect(Collectors.joining(", "));
     }
 
     public static UserProfileEditViewDTO toUserProfileEditView(UserProfile userProfile) {
         UserProfileEditViewDTO userProfileEditView = new UserProfileEditViewDTO();
+        List<UserProfileInterest> userProfileInterests = userProfile.getUserProfileInterests();
         User user = userProfile.getUser();
 
         userProfileEditView.setIntroduction(userProfile.getIntroduction());
         userProfileEditView.setEmail(user.getEmail());
         userProfileEditView.setUsername(user.getUsername());
-        userProfileEditView.setInterests(flattenInterests(userProfile.getInterests()));
+        if (userProfileInterests != null) {
+            userProfileEditView.setInterests(flattenInterests(userProfileInterests));
+        }
 
         return userProfileEditView;
     }
@@ -35,5 +40,12 @@ public class UserProfileConverter {
         userProfileEditView.setUsername(username);
 
         return userProfileEditView;
+    }
+
+    public static UserProfile toUserProfile(UserProfileChangeDTO userProfileChangeDTO) {
+        UserProfile userProfile = new UserProfile();
+        userProfile.setIntroduction(userProfileChangeDTO.getIntroduction());
+
+        return userProfile;
     }
 }

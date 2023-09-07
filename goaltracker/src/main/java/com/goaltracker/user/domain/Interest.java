@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -20,6 +20,19 @@ public class Interest {
 
     private String tagName;
 
-    @ManyToMany(mappedBy = "interests")
-    private Set<UserProfile> userProfiles = new HashSet<>();
+    @OneToMany(mappedBy = "interest")
+    private List<UserProfileInterest> userProfileInterests;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Interest interest = (Interest) o;
+        return Objects.equals(id, interest.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

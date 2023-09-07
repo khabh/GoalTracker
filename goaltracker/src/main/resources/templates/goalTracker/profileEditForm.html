@@ -22,7 +22,7 @@
 
 <main>
   <section class="profile-form-container">
-    <form id="profile-form" class="profile-form">
+    <form id="profile-form" class="profile-form" action="/goal-tracker/profiles/me" method="put">
       <div class="form-group">
           <img src="https://blog.kakaocdn.net/dn/bOjQ1n/btrLqc2YHQB/913MZQGPgTXhngMbWnicJK/img.jpg" alt="User Profile"/>
       </div>
@@ -50,14 +50,14 @@
         <label for="self-introduction">자기소개</label>
         <textarea
                 id="self-introduction"
-                name="self-introduction"
+                name="introduction"
                 rows="4"
                 th:text="${userProfile.introduction} != null ? ${userProfile.introduction} : ''"
         ></textarea>
       </div>
       <div class="form-group">
         <label for="interests">관심 태그</label>
-        <input id="interests" name="interests" placeholder=""
+        <input id="interests" placeholder=""
                th:value="${userProfile.interests} != null ? ${userProfile.interests} : ''"
         />
       </div>
@@ -77,12 +77,29 @@
     const saveButton = document.getElementById("save-button");
     saveButton.addEventListener("click", function(event) {
       event.preventDefault();
-      const tags = document.getElementsByClassName('tagify__tag');
-      for (let i = 0; i < tags.length; i++) {
-        tags[i].setAttribute('name', 'interests');
-      }
       const form = document.getElementById('profile-form');
-      form.submit();
+      const tags = document.getElementsByClassName('tagify__tag');
+      if (tags) {
+        Array.from(tags).forEach(tag => {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'interests';
+          input.value = tag.getAttribute('value');
+          form.appendChild(input);
+        });
+      }
+      fetch(form.action, {
+        method: 'PUT',
+        body: new FormData(form)
+      }).then(response => {
+        if (response.ok) {
+          window.location.href = "/goal-tracker/profiles/edit";
+        } else {
+          console.error('Network response was not ok.');
+        }
+      }).catch(error => {
+        console.error('There has been a problem with your fetch operation: ', error);
+      });
     });
   });
 </script>

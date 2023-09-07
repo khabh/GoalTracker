@@ -8,4 +8,5 @@ import com.goaltracker.user.dto.UserProfileEditViewDTO;
 public interface UserService {
     User signUpUserWithCredential(UserSignUpDTO userSignUpDTO, UserCredential userCredential);
     UserProfileEditViewDTO getEditViewWithoutProfileByUsername(String username);
+    User getUserByUsername(String username);
 }

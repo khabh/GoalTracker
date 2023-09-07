@@ -3,24 +3,22 @@ package com.goaltracker.user.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "user_profiles")
 @Getter
 @Setter
+@DynamicUpdate
 public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany
-    @JoinTable(name = "user_profile_interests",
-            joinColumns = @JoinColumn(name = "user_profile_id"),
-            inverseJoinColumns = @JoinColumn(name = "interest_id"))
-    private Set<Interest> interests = new HashSet<>();
+    @OneToMany(mappedBy = "userProfile")
+    private List<UserProfileInterest> userProfileInterests;
 
     private String profileImagePath;
     private String introduction;
