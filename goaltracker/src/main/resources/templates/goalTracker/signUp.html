@@ -2,6 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script th:src="@{/js/fontawesome.js}"></script>
   <link  th:href="@{/css/style.css}" rel="stylesheet">
   <link  th:href="@{/css/auth.main.css}" rel="stylesheet">
   <title>Signup - GoalTracker</title>
@@ -28,8 +29,12 @@
       <br>
       <form th:object="${userSignUpDTO}" action="/goal-tracker/auth/sign-up" method="post">
         <label for="username">Username</label>
-        <input  type="text" id="username" name="username" th:value="${userSignUpDTO.username}"
+        <div>
+          <input  type="text" id="username" name="username+" th:value="${userSignUpDTO.username}"
                th:class="${#fields.hasErrors('username') ? 'error-input' : 'user-input'}" required>
+          <i class="fa-regular fa-circle-check" style="color: #e76565;"></i>
+          <button class="check-username" onclick="checkUsername()">중복체크</button>
+        </div>
         <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error-message"></span>
 
         <label for="email">Email</label>
@@ -50,6 +55,11 @@
   </div>
 
 </main>
+<script>
+  function checkUsername() {
+    const username = document.getElementById('username').getAttribute('value');
+  }
+</script>
 <footer>
   <p>&copy; 2023 GoalTracker. All rights reserved.</p>
 </footer>
