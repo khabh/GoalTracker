@@ -8,9 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/goal-tracker/profiles")
@@ -33,8 +38,17 @@ public class UserProfileControllerImpl implements UserProfileController {
 
     @Override
     @PutMapping("/me")
-    public ResponseEntity<String> createOrEditUserProfile(@Valid UserProfileChangeDTO userProfileChangeDTO) {
+    public ResponseEntity<Object> createOrEditUserProfile(@Valid UserProfileChangeDTO userProfileChangeDTO, BindingResult userProfileChangeResult) {
+        if (userProfileChangeResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError error : userProfileChangeResult.getFieldErrors()) {
+                errors.put(error.getField(), error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errors);
+        }
         userAndUserProfileService.editOrCreateUserProfile(userProfileChangeDTO);
-        return ResponseEntity.ok("UserProfile updated successfully");
+        return ResponseEntity.ok()
+                .header("Location", "/goal-tracker/profiles/edit")
+                .build();
     }
 }

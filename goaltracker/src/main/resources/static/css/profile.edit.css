@@ -16,7 +16,6 @@ label {
 
 input[type="text"],
 input[type="email"],
-input[type="password"],
 .form-group textarea {
     width: 100%;
     padding: 0.8rem 0.5rem;
@@ -25,7 +24,9 @@ input[type="password"],
     font-size: 16px;
     box-sizing: border-box;
 }
-input[type="email"] {
+
+input[type="email"]
+{
     background-color: #ddd;
 }
 .tagify {
@@ -57,4 +58,15 @@ input[type="email"] {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
+}
+.error-message {
+    display: block;
+    color: #D64040;
+    font-size: 1rem;
+    margin: 0.2rem 0.3rem;
+}
+.form-group .error-input,
+#error-tag .tagify {
+    z-index: 1;
+    border: 2px solid #D64040;
 }
