@@ -2,7 +2,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/4d76bf7bc7.js" crossorigin="anonymous"></script>
+<!--    <script src="https://kit.fontawesome.com/4d76bf7bc7.js" crossorigin="anonymous"></script>-->
+    <script th:src="@{/js/fontawesome.js}"></script>
     <link th:href="@{/css/style.css}" rel="stylesheet">
     <link th:href="@{/css/goal.main.css}" rel="stylesheet">
     <title>GoalTracker</title>
@@ -66,6 +67,36 @@
                     </label>
                 </div>
             </div>
+
+            <div class="goal-card">
+                <div class="goal-info-wrapper">
+                    <h3 class="goal-title">goal Name</h3>
+                    <p>Due Date: 2023-12-31</p>
+                    <div style="float:right"><p>Progress: <strong text="98%"></strong></p></div>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 98%"></div>
+                    </div>
+                </div>
+                <h3>Checklist</h3>
+                <div class="checklist-container">
+<!--                    <label th:each="checklistState : ${goal.checklistStates}" class="checklist">-->
+<!--                        <form th:action="@{/goal-tracker/checklist-states/{checklistStateId}(checklistStateId=${checklistState.id})}" method="patch">-->
+<!--                            <input type="hidden" th:name="isCompleted">-->
+<!--                            <input th:if="${checklistState.isCompleted}" th:name="isCompleted" type="checkbox" checked="checked" onchange="toggleAndSubmit(this.form);"/>-->
+<!--                            <input th:if="${!checklistState.isCompleted}" th:name="isCompleted" type="checkbox" onchange="toggleAndSubmit(this.form);"/>-->
+<!--                            <span class="on"></span>-->
+<!--                            <div th:text="${checklistState.content}" class="checklist-content"></div>-->
+<!--                        </form>-->
+<!--                    </label>-->
+                </div>
+            </div>
+
+            <div class="goal-card new-goal-card">
+                <a th:href="@{/goal-tracker/goals/create}" class="new-goal-button">
+                    <span class="plus-icon">+</span>
+                    Add a New Goal
+                </a>
+            </div>
         </section>
     </div>
 </main>
@@ -73,15 +104,5 @@
     <p>&copy; 2023 GoalTracker. All rights reserved.</p>
 </footer>
 </body>
-<script>
-    function toggleAndSubmit(form) {
-        const checkbox = form.querySelector('input[type="checkbox"]')
-        const hiddenInput = form.querySelector('input[type="hidden"]');
-        hiddenInput.value = checkbox.checked ? "true" : "false";
-        fetch(form.action, {
-            method: 'PATCH',
-            body: new FormData(form)
-        });
-    }
-</script>
+<script th:src="@{/js/activeGoals.js}"></script>
 </html>

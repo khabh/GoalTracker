@@ -114,3 +114,38 @@
     font-size: 1.4rem;
     cursor: pointer;
 }
+.new-goal-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd; /* You can change this color */
+}
+
+.new-goal-button {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 20px;
+
+    font-size : 1em;
+
+    color : #000; /* You can change this color */
+    background-color : #fff; /* You can change this color */
+    text-decoration : none;
+
+    transition : background-color .3s ease-in-out;
+}
+
+.new-goal-button:hover {
+    background-color:#f0f0f0; /* You can change this color */
+}
+
+.plus-icon {
+    font-size : 2em;
+    margin-bottom : .5em;
+}
