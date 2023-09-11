@@ -30,10 +30,10 @@
       <form th:object="${userSignUpDTO}" action="/goal-tracker/auth/sign-up" method="post">
         <label for="username">Username</label>
         <div>
-          <input  type="text" id="username" name="username+" th:value="${userSignUpDTO.username}"
-               th:class="${#fields.hasErrors('username') ? 'error-input' : 'user-input'}" required>
+          <input type="text" id="username" name="username" th:value="${userSignUpDTO.username}"
+               th:class="${#fields.hasErrors('username') ? 'error-input' : 'user-input'}" onchange="displayCheckUsernameButton()" required>
           <i class="fa-regular fa-circle-check" style="color: #e76565;"></i>
-          <button class="check-username" onclick="checkUsername()">중복체크</button>
+          <button type="button" class="check-username" onclick="checkUsername(event)">중복체크</button>
         </div>
         <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error-message"></span>
 
@@ -55,10 +55,58 @@
   </div>
 
 </main>
+<script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
-  function checkUsername() {
-    const username = document.getElementById('username').getAttribute('value');
+  const checkUsernameButton = document.querySelector('.check-username');
+  const checkedIcon = document.querySelector('.fa-circle-check');
+  let isUsernameChecked = false;
+
+  function checkUsername(event) {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    if (!username) {
+      return;
+    }
+    const url = `/goal-tracker/users/username-check/${encodeURIComponent(username)}`;
+    fetch(url, {method: 'GET'}).then(response => {
+      response.json().then(data => {
+        if (data["isDuplicated"]) {
+          displayCheckUsernameButton();
+          Swal.fire({
+            icon: 'error',
+            title: '이미 사용 중인 이름입니다.',
+          });
+        } else {
+          isUsernameChecked = true;
+          checkUsernameButton.style.display = 'none';
+          checkedIcon.style.display = 'inline-block';
+          Swal.fire({
+            icon: 'success',
+            title: '사용 가능한 이름입니다.',
+          });
+        }
+      });
+    });
   }
+
+  function displayCheckUsernameButton() {
+    if (!isUsernameChecked)
+      return;
+    isUsernameChecked = false;
+    checkUsernameButton.style.display = 'inline-block';
+    checkedIcon.style.display = 'none';
+  }
+
+  document.querySelector('form').addEventListener('submit', function(event) {
+    if (!isUsernameChecked) {
+      event.preventDefault();
+      Swal.fire({
+        icon: 'error',
+        title: '사용자 이름 중복 체크가 필요합니다.',
+      });
+    }
+  });
 </script>
 <footer>
   <p>&copy; 2023 GoalTracker. All rights reserved.</p>

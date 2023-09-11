@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = NoWhitespaceValidator.class)
 public @interface NoWhitespace {
 
-    String message() default "String must not contain whitespace";
+    String message() default "공백이 포함될 수 없습니다.";
 
     Class<?>[] groups() default {};
 

@@ -122,12 +122,12 @@
 .auth-form form div .check-username {
     font-size: 0.3rem;
     width: 19%;
-    margin: 0.4rem 0;
+    margin: 0.1rem 0;
     /*margin-top: 0;*/
     padding: 0;
 }
 .auth-form form div i {
     font-size: 2.4rem;
     margin: auto 0.8725rem auto 0;
-    /*margin-left: 0;*/
+    display: none;
 }

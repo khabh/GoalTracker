@@ -9,6 +9,10 @@ import com.goaltracker.auth.token.EmailPasswordAuthenticationToken;
 import com.goaltracker.auth.util.TokenManager;
 import com.goaltracker.auth.util.UserCredentialConverter;
 import com.goaltracker.user.domain.User;
+import com.goaltracker.user.dto.EmailDuplicationCheckDTO;
+import com.goaltracker.user.dto.UsernameDuplicationCheckDTO;
+import com.goaltracker.user.exception.EmailDuplicatedException;
+import com.goaltracker.user.exception.UsernameDuplicatedException;
 import com.goaltracker.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -45,10 +49,23 @@ public class UserCredentialServiceImpl implements UserCredentialService {
 
     @Override
     public String signUpAndAuthenticateUser(UserSignUpDTO userSignUpDTO) {
+        checkUsernameAndEmailDuplication(userSignUpDTO);
         UserCredential userCredential = saveCredentialWithHashedPassword(userSignUpDTO.getPassword());
         User user = userService.signUpUserWithCredential(userSignUpDTO, userCredential);
 
         return tokenManager.generateToken(user.getUsername(), userCredential);
+    }
+
+    private void checkUsernameAndEmailDuplication(UserSignUpDTO userSignUpDTO) {
+        UsernameDuplicationCheckDTO usernameDuplicationCheckDTO = userService.checkUsernameDuplication(userSignUpDTO.getUsername());
+        if (usernameDuplicationCheckDTO.isDuplicated()) {
+            throw new UsernameDuplicatedException();
+        }
+
+        EmailDuplicationCheckDTO emailDuplicationCheckDTO = userService.checkEmailDuplication(userSignUpDTO.getEmail());
+        if (emailDuplicationCheckDTO.isDuplicated()) {
+            throw new EmailDuplicatedException();
+        }
     }
 
     private UserCredential saveCredentialWithHashedPassword(String rawPassword) {

@@ -4,6 +4,8 @@ import com.goaltracker.auth.dto.SignInDTO;
 import com.goaltracker.auth.dto.UserSignUpDTO;
 import com.goaltracker.auth.service.UserCredentialService;
 import com.goaltracker.config.Constants;
+import com.goaltracker.user.exception.EmailDuplicatedException;
+import com.goaltracker.user.exception.UsernameDuplicatedException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -11,9 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -52,18 +53,41 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     @PostMapping("sign-up")
-    public String signUpUser(@Valid UserSignUpDTO userSignUpDTO, BindingResult signUpValidationResult,
+    public ModelAndView signUpUser(@Valid UserSignUpDTO userSignUpDTO, BindingResult signUpValidationResult,
                              RedirectAttributes redirectAttributes, HttpServletResponse httpServletResponse) {
         if (signUpValidationResult.hasErrors()) {
             redirectAttributes.addFlashAttribute( BindingResult.MODEL_KEY_PREFIX + "userSignUpDTO", signUpValidationResult);
             redirectAttributes.addFlashAttribute("userSignUpDTO", userSignUpDTO);
 
-            return "redirect:/goal-tracker/auth/sign-up";
+            return new ModelAndView("/goal-tracker/auth/sign-up");
         }
-        String token = userCredentialService.signUpAndAuthenticateUser(userSignUpDTO);
-        addTokenCookieToResponse(token, httpServletResponse);
+        try {
+            String token = userCredentialService.signUpAndAuthenticateUser(userSignUpDTO);
+            addTokenCookieToResponse(token, httpServletResponse);
 
-        return null;
+            return new ModelAndView("/goal-tracker/auth/sign-up");
+        } catch (UsernameDuplicatedException | EmailDuplicatedException exception) {
+            return handleSignUpException(exception, signUpValidationResult, redirectAttributes, userSignUpDTO);
+        }
+    }
+
+    private ModelAndView handleSignUpException(Exception exception, BindingResult signUpValidationResult,
+                                               RedirectAttributes redirectAttributes, UserSignUpDTO userSignUpDTO) {
+        String fieldErrorKey;
+        if (exception instanceof UsernameDuplicatedException) {
+            fieldErrorKey = "username";
+        } else if (exception instanceof EmailDuplicatedException) {
+            fieldErrorKey = "email";
+        } else {
+            throw new IllegalArgumentException("Unsupported exception type: " + exception.getClass().getSimpleName());
+        }
+
+        signUpValidationResult.rejectValue(fieldErrorKey, "error.userSignUpDTO." + fieldErrorKey, exception.getMessage());
+
+        redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "userSignUpDTO", signUpValidationResult);
+        redirectAttributes.addFlashAttribute("userSignUpDTO", userSignUpDTO);
+
+        return new ModelAndView("redirect:/goal-tracker/auth/sign-up");
     }
 
     private void addTokenCookieToResponse(String token, HttpServletResponse httpServletResponse) {

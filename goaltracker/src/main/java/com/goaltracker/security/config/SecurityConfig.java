@@ -3,6 +3,7 @@ package com.goaltracker.security.config;
 import com.goaltracker.security.filter.CustomJwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -23,10 +24,11 @@ public class SecurityConfig {
         return httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                     (auth) -> auth
-                        .requestMatchers("/goal-tracker/auth/sign-in").permitAll()
-                        .requestMatchers("/goal-tracker/auth/sign-up").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/goal-tracker/users/username-check/{username}").permitAll()
+                            .requestMatchers("/goal-tracker/auth/sign-in").permitAll()
+                            .requestMatchers("/goal-tracker/auth/sign-up").permitAll()
                             .anyRequest().authenticated()
-                )
+                   )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(customJwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
