@@ -59,13 +59,13 @@ public class AuthControllerImpl implements AuthController {
             redirectAttributes.addFlashAttribute( BindingResult.MODEL_KEY_PREFIX + "userSignUpDTO", signUpValidationResult);
             redirectAttributes.addFlashAttribute("userSignUpDTO", userSignUpDTO);
 
-            return new ModelAndView("/goal-tracker/auth/sign-up");
+            return new ModelAndView("redirect:/goal-tracker/auth/sign-up");
         }
         try {
             String token = userCredentialService.signUpAndAuthenticateUser(userSignUpDTO);
             addTokenCookieToResponse(token, httpServletResponse);
 
-            return new ModelAndView("/goal-tracker/auth/sign-up");
+            return new ModelAndView("redirect:/goal-tracker/auth/sign-up");
         } catch (UsernameDuplicatedException | EmailDuplicatedException exception) {
             return handleSignUpException(exception, signUpValidationResult, redirectAttributes, userSignUpDTO);
         }
