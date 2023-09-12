@@ -5,5 +5,5 @@ import com.goaltracker.auth.dto.UserSignUpDTO;
 
 public interface UserCredentialService {
     String authenticateUserWithJwtToken(SignInDTO signInDTO);
-    String signUpAndAuthenticateUser(UserSignUpDTO userSignUpDTO);
+    void signUpUser(UserSignUpDTO userSignUpDTO);
 }

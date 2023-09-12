@@ -1,6 +1,5 @@
 package com.goaltracker.auth.util;
 
-import com.goaltracker.auth.domain.UserCredential;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,15 +30,15 @@ public class TokenManager {
         this.jwtExpirationInMs = expiration;
     }
 
-    public String generateToken(String username, UserCredential userCredential) {
-        return BEARER_PREFIX + Jwts.builder()
-                .setSubject(username)
-                .claim(AUTHORITIES_KEY, AuthorityConverter.flattenAuthorities(userCredential))
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
-                .signWith(jwtSecret, SignatureAlgorithm.HS512)
-                .compact();
-    }
+//    public String generateToken(String username, UserCredential userCredential) {
+//        return BEARER_PREFIX + Jwts.builder()
+//                .setSubject(username)
+//                .claim(AUTHORITIES_KEY, AuthorityConverter.flattenAuthorities(userCredential))
+//                .setIssuedAt(new Date())
+//                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
+//                .signWith(jwtSecret, SignatureAlgorithm.HS512)
+//                .compact();
+//    }
 
     public String generateToken(Authentication authentication) {
         return BEARER_PREFIX + Jwts.builder()

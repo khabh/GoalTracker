@@ -5,11 +5,15 @@ import com.goaltracker.auth.dto.UserSignUpDTO;
 import com.goaltracker.auth.service.UserCredentialService;
 import com.goaltracker.config.Constants;
 import com.goaltracker.user.exception.EmailDuplicatedException;
+import com.goaltracker.user.exception.UserNotFoundException;
 import com.goaltracker.user.exception.UsernameDuplicatedException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,11 +40,17 @@ public class AuthControllerImpl implements AuthController {
 
     @Override
     @PostMapping("/sign-in")
-    public String signInUser(@Valid SignInDTO signInDTO, HttpServletResponse httpServletResponse) {
-        String token = userCredentialService.authenticateUserWithJwtToken(signInDTO);
-        addTokenCookieToResponse(token, httpServletResponse);
+    public ResponseEntity<String> signInUser(@Valid SignInDTO signInDTO, HttpServletResponse httpServletResponse) {
+        try {
+            String token = userCredentialService.authenticateUserWithJwtToken(signInDTO);
+            addTokenCookieToResponse(token, httpServletResponse);
 
-        return null;
+            return ResponseEntity.ok("로그인 성공");
+        } catch (BadCredentialsException | UserNotFoundException e)  {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED.value())
+                    .build();
+        }
     }
 
     @Override
@@ -62,10 +72,9 @@ public class AuthControllerImpl implements AuthController {
             return new ModelAndView("redirect:/goal-tracker/auth/sign-up");
         }
         try {
-            String token = userCredentialService.signUpAndAuthenticateUser(userSignUpDTO);
-            addTokenCookieToResponse(token, httpServletResponse);
+            userCredentialService.signUpUser(userSignUpDTO);
 
-            return new ModelAndView("redirect:/goal-tracker/profiles/me/edit");
+            return new ModelAndView("redirect:/goal-tracker/auth/sign-in");
         } catch (UsernameDuplicatedException | EmailDuplicatedException exception) {
             return handleSignUpException(exception, signUpValidationResult, redirectAttributes, userSignUpDTO);
         }
@@ -93,6 +102,9 @@ public class AuthControllerImpl implements AuthController {
     private void addTokenCookieToResponse(String token, HttpServletResponse httpServletResponse) {
         Cookie cookie = new Cookie(Constants.AUTHORIZATION_HEADER, token);
         cookie.setPath("/");
+        cookie.setDomain("");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
         cookie.setMaxAge(7 * 24 * 60 * 60);
         httpServletResponse.addCookie(cookie);
     }

@@ -8,7 +8,6 @@ import com.goaltracker.auth.repository.UserCredentialRepository;
 import com.goaltracker.auth.token.EmailPasswordAuthenticationToken;
 import com.goaltracker.auth.util.TokenManager;
 import com.goaltracker.auth.util.UserCredentialConverter;
-import com.goaltracker.user.domain.User;
 import com.goaltracker.user.dto.EmailDuplicationCheckDTO;
 import com.goaltracker.user.dto.UsernameDuplicationCheckDTO;
 import com.goaltracker.user.exception.EmailDuplicatedException;
@@ -48,12 +47,10 @@ public class UserCredentialServiceImpl implements UserCredentialService {
     }
 
     @Override
-    public String signUpAndAuthenticateUser(UserSignUpDTO userSignUpDTO) {
+    public void signUpUser(UserSignUpDTO userSignUpDTO) {
         checkUsernameAndEmailDuplication(userSignUpDTO);
         UserCredential userCredential = saveCredentialWithHashedPassword(userSignUpDTO.getPassword());
-        User user = userService.signUpUserWithCredential(userSignUpDTO, userCredential);
-
-        return tokenManager.generateToken(user.getUsername(), userCredential);
+        userService.signUpUserWithCredential(userSignUpDTO, userCredential);
     }
 
     private void checkUsernameAndEmailDuplication(UserSignUpDTO userSignUpDTO) {
