@@ -29,7 +29,7 @@ public class UserProfileControllerImpl implements UserProfileController {
     }
 
     @Override
-    @GetMapping("/edit")
+    @GetMapping("/me/edit")
     @PreAuthorize("hasAnyRole('USER')")
     public String showUserProfileEditForm(Model model) {
         model.addAttribute("userProfile", userAndUserProfileService.getUserProfileEditView());
@@ -48,7 +48,7 @@ public class UserProfileControllerImpl implements UserProfileController {
         }
         userAndUserProfileService.editOrCreateUserProfile(userProfileChangeDTO);
         return ResponseEntity.ok()
-                .header("Location", "/goal-tracker/profiles/edit")
+                .header("Location", "/goal-tracker/profiles/me/edit")
                 .build();
     }
 }

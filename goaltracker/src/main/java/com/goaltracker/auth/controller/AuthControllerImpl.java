@@ -65,7 +65,7 @@ public class AuthControllerImpl implements AuthController {
             String token = userCredentialService.signUpAndAuthenticateUser(userSignUpDTO);
             addTokenCookieToResponse(token, httpServletResponse);
 
-            return new ModelAndView("redirect:/goal-tracker/auth/sign-up");
+            return new ModelAndView("redirect:/goal-tracker/profiles/me/edit");
         } catch (UsernameDuplicatedException | EmailDuplicatedException exception) {
             return handleSignUpException(exception, signUpValidationResult, redirectAttributes, userSignUpDTO);
         }
