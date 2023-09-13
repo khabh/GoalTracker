@@ -1,10 +1,13 @@
 package com.goaltracker.user.util;
 
+import com.goaltracker.user.constant.RelationType;
 import com.goaltracker.user.domain.User;
 import com.goaltracker.user.domain.UserProfile;
 import com.goaltracker.user.domain.UserProfileInterest;
 import com.goaltracker.user.dto.UserProfileChangeDTO;
 import com.goaltracker.user.dto.UserProfileEditViewDTO;
+import com.goaltracker.user.dto.UserProfileWithFollowStatsDTO;
+import com.goaltracker.user.dto.vo.FollowStatsVO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,5 +50,22 @@ public class UserProfileConverter {
         userProfile.setIntroduction(userProfileChangeDTO.getIntroduction());
 
         return userProfile;
+    }
+
+    public static UserProfileWithFollowStatsDTO toUserProfileWithFollowStats(User user, RelationType relationType, FollowStatsVO followStats) {
+        UserProfile userProfile = user.getUserProfile();
+        List<String> interests = userProfile.getUserProfileInterests()
+                .stream()
+                .map(userProfileInterest -> userProfileInterest.getInterest().getTagName())
+                .collect(Collectors.toList());
+
+        return UserProfileWithFollowStatsDTO.builder()
+                .username(user.getUsername())
+                .followingCount(followStats.getFollowingCount())
+                .followerCount(followStats.getFollowerCount())
+                .description(userProfile.getIntroduction())
+                .interests(interests)
+                .relationType(relationType)
+                .build();
     }
 }

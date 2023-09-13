@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Set;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -30,8 +30,15 @@ public class User {
     private String email;
 
     @OneToMany(mappedBy = "follower")
-    private Set<FollowRelation> following = new HashSet<>();
+    private List<FollowRelation> following = new ArrayList<>();
 
     @OneToMany(mappedBy = "followee")
-    private Set<FollowRelation> followers = new HashSet<>();
+    private List<FollowRelation> followers = new ArrayList<>();
+
+    public boolean isFollowing(User user) {
+        Long userId = user.getId();
+        return following.stream()
+                .map(FollowRelation::getFollowee)
+                .anyMatch(followee -> followee.getId().equals(userId));
+    }
 }
