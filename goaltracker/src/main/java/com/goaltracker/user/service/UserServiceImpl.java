@@ -22,11 +22,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User signUpUserWithCredential(UserSignUpDTO userSignUpDTO, UserCredential userCredential) {
+    public void signUpUserWithCredential(UserSignUpDTO userSignUpDTO, UserCredential userCredential) {
         User createdUser = UserConverter.toUser(userSignUpDTO, userCredential);
         userRepository.save(createdUser);
-
-        return createdUser;
     }
 
     @Override
@@ -50,5 +48,11 @@ public class UserServiceImpl implements UserService {
     public EmailDuplicationCheckDTO checkEmailDuplication(String email) {
         boolean isDuplicated = userRepository.existsByEmail(email);
         return new EmailDuplicationCheckDTO(isDuplicated);
+    }
+
+    @Override
+    public Long getUserIdByUsername(String username) {
+        return userRepository.findUserIdByUsername(username)
+                .orElseThrow();
     }
 }

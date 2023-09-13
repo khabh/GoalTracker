@@ -8,9 +8,10 @@ import com.goaltracker.user.dto.UserProfileEditViewDTO;
 import com.goaltracker.user.dto.UsernameDuplicationCheckDTO;
 
 public interface UserService {
-    User signUpUserWithCredential(UserSignUpDTO userSignUpDTO, UserCredential userCredential);
+    void signUpUserWithCredential(UserSignUpDTO userSignUpDTO, UserCredential userCredential);
     UserProfileEditViewDTO getEditViewWithoutProfileByUsername(String username);
     User getUserByUsername(String username);
     UsernameDuplicationCheckDTO checkUsernameDuplication(String username);
     EmailDuplicationCheckDTO checkEmailDuplication(String email);
+    Long getUserIdByUsername(String username);
 }

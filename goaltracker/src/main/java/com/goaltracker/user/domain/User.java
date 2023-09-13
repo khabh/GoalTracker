@@ -22,7 +22,7 @@ public class User {
     @JoinColumn(name = "user_profile_id")
     private UserProfile userProfile;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_credential_id")
     private UserCredential userCredential;
 
