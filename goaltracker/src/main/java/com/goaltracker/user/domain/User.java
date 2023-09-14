@@ -34,11 +34,4 @@ public class User {
 
     @OneToMany(mappedBy = "followee")
     private List<FollowRelation> followers = new ArrayList<>();
-
-    public boolean isFollowing(User user) {
-        Long userId = user.getId();
-        return following.stream()
-                .map(FollowRelation::getFollowee)
-                .anyMatch(followee -> followee.getId().equals(userId));
-    }
 }

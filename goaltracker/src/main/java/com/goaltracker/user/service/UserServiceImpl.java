@@ -9,6 +9,8 @@ import com.goaltracker.user.dto.UserProfileEditViewDTO;
 import com.goaltracker.user.dto.UserProfileWithFollowStatsDTO;
 import com.goaltracker.user.dto.UsernameDuplicationCheckDTO;
 import com.goaltracker.user.dto.vo.FollowStatsVO;
+import com.goaltracker.user.exception.UserNotFoundException;
+import com.goaltracker.user.repository.FollowRelationRepository;
 import com.goaltracker.user.repository.UserRepository;
 import com.goaltracker.user.util.UserConverter;
 import com.goaltracker.user.util.UserProfileConverter;
@@ -19,10 +21,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final FollowRelationRepository followRelationRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, FollowRelationRepository followRelationRepository) {
         this.userRepository = userRepository;
+        this.followRelationRepository = followRelationRepository;
     }
 
     @Override
@@ -62,19 +66,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserProfileWithFollowStatsDTO getUserProfileForDashBoard(Long targetUserId, Authentication loggedInAuthentication) {
-        User targetUser = userRepository.findById(targetUserId).orElseThrow();
-        RelationType userRelationType = determineUserRelation(targetUser, loggedInAuthentication);
-        FollowStatsVO userFollowStats = userRepository.findFollowStatsByUser(targetUser);
+        User targetUser = userRepository.findById(targetUserId).orElseThrow(UserNotFoundException::new);
+        Long loggedInUserId = getUserIdByUsername(loggedInAuthentication.getName());
+        RelationType userRelationType = getUserRelationShip(targetUser.getId(), loggedInUserId);
+        FollowStatsVO followStats = followRelationRepository.findFollowStatsByUser(targetUser);
 
-        return UserProfileConverter.toUserProfileWithFollowStats(targetUser, userRelationType, userFollowStats);
+        return UserProfileConverter.toUserProfileWithFollowStats(targetUser, userRelationType, followStats);
     }
 
-    private RelationType determineUserRelation(User targetUser, Authentication loggedInAuthentication) {
-        if (targetUser.getUsername().equals(loggedInAuthentication.getName()))
+    private RelationType getUserRelationShip(Long targetUserId, Long loggedInUserId) {
+        if (loggedInUserId.equals(targetUserId))
             return RelationType.SELF;
 
-        User loggedInUser = getUserByUsername(loggedInAuthentication.getName());
-        if (loggedInUser.isFollowing(targetUser))
+        boolean isFollowingTargetUser = followRelationRepository.existsByFollowee_idAndFollower_id(targetUserId, loggedInUserId);
+        if (isFollowingTargetUser)
             return RelationType.FOLLOWING;
         return RelationType.NOT_FOLLOWING;
     }

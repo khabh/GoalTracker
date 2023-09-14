@@ -16,5 +16,5 @@ public interface UserService {
     UsernameDuplicationCheckDTO checkUsernameDuplication(String username);
     EmailDuplicationCheckDTO checkEmailDuplication(String email);
     Long getUserIdByUsername(String username);
-    UserProfileWithFollowStatsDTO getUserProfileForDashBoard(Long userId, Authentication userAuthentication);
+    UserProfileWithFollowStatsDTO getUserProfileForDashBoard(Long targetUserId, Authentication loggedInAuthentication);
 }
