@@ -10,8 +10,8 @@ import java.util.List;
 @Builder
 public class UserProfileWithFollowStatsDTO {
     String username;
-    int followerCount;
-    int followingCount;
+    long followerCount;
+    long followingCount;
     String description;
     List<String> interests;
     RelationType relationType;
