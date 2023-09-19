@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Builder
 public class UserProfileWithFollowStatsDTO {
+    Long userId;
     String username;
     long followerCount;
     long followingCount;

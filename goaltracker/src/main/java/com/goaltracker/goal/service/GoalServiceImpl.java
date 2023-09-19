@@ -40,14 +40,13 @@ public class GoalServiceImpl implements GoalService {
     }
 
     @Override
-    public List<ActiveGoalDTO> getActiveGoals() {
-        List<ChecklistState> checklistStates = checklistService.getDailyChecklistStatesToActiveGoals();
+    public List<ActiveGoalDTO> getUserActiveGoals(Long userId) {
+        List<ChecklistState> checklistStates = checklistService.getDailyChecklistStatesForUserActiveGoals(userId);
         Map<Goal, List<ChecklistState>> groupedChecklistStates = groupChecklistStatesByGoal(checklistStates);
 
         return groupedChecklistStates.entrySet()
                 .stream()
-                .map(activeGoal ->
-                        GoalConverter.toActiveGoalDTO(activeGoal.getKey(), activeGoal.getValue()))
+                .map(activeGoal -> GoalConverter.toActiveGoalDTO(activeGoal.getKey(), activeGoal.getValue()))
                 .collect(Collectors.toList());
     }
 

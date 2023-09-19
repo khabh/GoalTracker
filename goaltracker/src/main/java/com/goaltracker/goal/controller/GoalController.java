@@ -9,5 +9,4 @@ public interface GoalController {
     String showCreateGoalForm();
     String createGoal(CreateGoalDTO createGoalDTO, CreateChecklistsDTO createChecklistsDTO);
     String showGoalPerformance(Long goalId, Model model);
-    String showActiveGoals(Long userId, Model model);
 }

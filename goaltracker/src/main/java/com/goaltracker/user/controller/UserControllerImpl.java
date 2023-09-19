@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,10 +44,12 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @GetMapping("/{userId}/active-goals")
-    public String showUserAndActiveGoals(@PathVariable("userId") Long userId) {
+    public String showUserAndActiveGoals(@PathVariable("userId") Long userId, Model model) {
         Authentication userAuthentication = SecurityContextHolder.getContext().getAuthentication();
-        userService.getUserProfileForDashBoard(userId, userAuthentication);
-        return null;
+        model.addAttribute("userProfile", userService.getUserProfileWithFollowStats(userId, userAuthentication));
+        model.addAttribute("activeGoals", userService.getUserActiveGoals(userId));
+
+        return "goalTracker/userActiveGoals";
     }
 
     private String createUserActiveGoalsRedirectURL(Long userId) {

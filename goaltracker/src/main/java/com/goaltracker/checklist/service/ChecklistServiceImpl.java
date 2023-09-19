@@ -23,8 +23,8 @@ public class ChecklistServiceImpl implements ChecklistService {
     }
 
     @Override
-    public List<ChecklistState> getDailyChecklistStatesToActiveGoals() {
-        return checklistRepository.findCurrentDateChecklistStatesByGoalDueDate();
+    public List<ChecklistState> getDailyChecklistStatesForUserActiveGoals(Long userId) {
+        return checklistRepository.findCurrentDateChecklistStatesByUserActiveGoals(userId);
     }
 
     @Override

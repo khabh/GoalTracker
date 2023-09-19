@@ -12,5 +12,5 @@ public interface GoalService {
     void createGoal(CreateGoalDTO createGoalDTO, CreateChecklistsDTO createChecklistsDTO);
     List<Goal> getGoalsWithDueDateNotPassed();
     GoalPerformanceDTO getGoalPerformance(Long goalId);
-    List<ActiveGoalDTO> getActiveGoals();
+    List<ActiveGoalDTO> getUserActiveGoals(Long userId);
 }

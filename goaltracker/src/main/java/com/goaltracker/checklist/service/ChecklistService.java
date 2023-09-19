@@ -11,5 +11,5 @@ public interface ChecklistService {
 
     void createChecklists(CreateChecklistsDTO createChecklistsDTO, Goal goal);
     List<PopularCompletedChecklistDTO> getPopularCompletedChecklists(Goal goal);
-    List<ChecklistState> getDailyChecklistStatesToActiveGoals();
+    List<ChecklistState> getDailyChecklistStatesForUserActiveGoals(Long userId);
 }

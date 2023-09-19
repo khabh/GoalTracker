@@ -60,6 +60,7 @@ public class UserProfileConverter {
                 .collect(Collectors.toList());
 
         return UserProfileWithFollowStatsDTO.builder()
+                .userId(user.getId())
                 .username(user.getUsername())
                 .followingCount(followStats.getFollowingCount())
                 .followerCount(followStats.getFollowerCount())

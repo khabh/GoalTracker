@@ -17,8 +17,8 @@ public interface ChecklistRepository extends JpaRepository<Checklist, Long> {
             "FROM ChecklistState cs " +
             "INNER JOIN FETCH cs.checklist c " +
             "INNER JOIN FETCH c.goal g "+
-            "WHERE g.dueDate >= CURRENT_DATE AND cs.checklistHistory.date = CURRENT_DATE")
-    List<ChecklistState> findCurrentDateChecklistStatesByGoalDueDate();
+            "WHERE g.user.id = :userId AND g.dueDate >= CURRENT_DATE AND cs.checklistHistory.date = CURRENT_DATE")
+    List<ChecklistState> findCurrentDateChecklistStatesByUserActiveGoals(@Param("userId") Long userId);
 
     @Query("SELECT new com.goaltracker.checklist.dto.PopularCompletedChecklistDTO(c.content, count(cs))" +
             "FROM Checklist c " +

@@ -1,6 +1,8 @@
 package com.goaltracker.user.service;
 
 import com.goaltracker.auth.domain.UserCredential;
+import com.goaltracker.goal.dto.ActiveGoalDTO;
+import com.goaltracker.goal.service.GoalService;
 import com.goaltracker.user.constant.RelationType;
 import com.goaltracker.user.domain.User;
 import com.goaltracker.auth.dto.UserSignUpDTO;
@@ -18,14 +20,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final GoalService goalService;
     private final FollowRelationRepository followRelationRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, FollowRelationRepository followRelationRepository) {
+    public UserServiceImpl(UserRepository userRepository, GoalService goalService, FollowRelationRepository followRelationRepository) {
         this.userRepository = userRepository;
+        this.goalService = goalService;
         this.followRelationRepository = followRelationRepository;
     }
 
@@ -65,13 +71,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserProfileWithFollowStatsDTO getUserProfileForDashBoard(Long targetUserId, Authentication loggedInAuthentication) {
+    public UserProfileWithFollowStatsDTO getUserProfileWithFollowStats(Long targetUserId, Authentication loggedInAuthentication) {
         User targetUser = userRepository.findById(targetUserId).orElseThrow(UserNotFoundException::new);
         Long loggedInUserId = getUserIdByUsername(loggedInAuthentication.getName());
         RelationType userRelationType = getUserRelationShip(targetUser.getId(), loggedInUserId);
         FollowStatsVO followStats = followRelationRepository.findFollowStatsByUser(targetUser);
 
         return UserProfileConverter.toUserProfileWithFollowStats(targetUser, userRelationType, followStats);
+    }
+
+    @Override
+    public List<ActiveGoalDTO> getUserActiveGoals(Long userId) {
+        // getUserProfileWithFollowStats와 함께 실행되므로 user 검증 생략
+        return goalService.getUserActiveGoals(userId);
     }
 
     private RelationType getUserRelationShip(Long targetUserId, Long loggedInUserId) {

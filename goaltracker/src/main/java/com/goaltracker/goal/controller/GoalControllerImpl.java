@@ -41,11 +41,4 @@ public class GoalControllerImpl implements GoalController {
         model.addAttribute("goalPerformance", goalService.getGoalPerformance(goalId));
         return "goalTracker/goalPerformance";
     }
-
-    @Override
-    @GetMapping("/active/users/{userId}")
-    public String showActiveGoals(@PathVariable Long userId, Model model) {
-        model.addAttribute("activeGoals", goalService.getActiveGoals());
-        return "goalTracker/activeGoals";
-    }
 }
