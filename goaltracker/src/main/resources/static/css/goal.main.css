@@ -50,13 +50,17 @@
     font-weight: bold;
 }
 
+.interest-tags {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .user-profile-summary .interest-tags .tag {
-    display: inline-block;
     background-color: #E76161;
     color: white;
     padding: 0.2rem 0.5rem;
     border-radius: 3px;
-    margin-right: 0.1rem;
+    margin-right: 0.2rem;
     margin-bottom: 0.2rem;
 }
 

@@ -26,19 +26,14 @@
                 <img src="https://blog.kakaocdn.net/dn/bOjQ1n/btrLqc2YHQB/913MZQGPgTXhngMbWnicJK/img.jpg" alt="User Profile">
             </div>
             <div class="profile-details">
-                <h3 class="user-name">User Name</h3>
+                <h3 class="user-name" th:text="${userProfile.username}"></h3>
                 <div class="follow-stats">
-                    <p><i class="fa-solid fa-heart"></i> Followers <strong>1000</strong> · Following <strong>500</strong></p>
+                    <p><i class="fa-solid fa-heart"></i> Followers <strong th:text="${userProfile.followerCount}"></strong> · Following <strong th:text="${userProfile.followingCount}"></strong></p>
                 </div>
-                <p class="user-introduction">Passionate about learning and achieving goals!</p>
+                <p class="user-introduction" th:text="${userProfile.description}">Passionate about learning and achieving goals!</p>
 
                 <div class="interest-tags">
-                    <span class="tag">#LanguageLearning</span>
-                    <span class="tag">#Fitness</span>
-                    <span class="tag">#Coding</span>
-                    <span class="tag">#Art</span>
-                    <span class="tag">#Fitness</span>
-                    <span class="tag">#Coding</span>
+                    <span th:each="interest : ${userProfile.interests}" class="tag" th:text="|#${interest}|"></span>
                 </div>
 
             </div>
@@ -67,30 +62,6 @@
                     </label>
                 </div>
             </div>
-
-            <div class="goal-card">
-                <div class="goal-info-wrapper">
-                    <h3 class="goal-title">goal Name</h3>
-                    <p>Due Date: 2023-12-31</p>
-                    <div style="float:right"><p>Progress: <strong text="98%"></strong></p></div>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 98%"></div>
-                    </div>
-                </div>
-                <h3>Checklist</h3>
-                <div class="checklist-container">
-<!--                    <label th:each="checklistState : ${goal.checklistStates}" class="checklist">-->
-<!--                        <form th:action="@{/goal-tracker/checklist-states/{checklistStateId}(checklistStateId=${checklistState.id})}" method="patch">-->
-<!--                            <input type="hidden" th:name="isCompleted">-->
-<!--                            <input th:if="${checklistState.isCompleted}" th:name="isCompleted" type="checkbox" checked="checked" onchange="toggleAndSubmit(this.form);"/>-->
-<!--                            <input th:if="${!checklistState.isCompleted}" th:name="isCompleted" type="checkbox" onchange="toggleAndSubmit(this.form);"/>-->
-<!--                            <span class="on"></span>-->
-<!--                            <div th:text="${checklistState.content}" class="checklist-content"></div>-->
-<!--                        </form>-->
-<!--                    </label>-->
-                </div>
-            </div>
-
             <div class="goal-card new-goal-card">
                 <a th:href="@{/goal-tracker/goals/create}" class="new-goal-button">
                     <span class="plus-icon">+</span>
