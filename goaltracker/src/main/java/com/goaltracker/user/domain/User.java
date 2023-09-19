@@ -1,6 +1,7 @@
 package com.goaltracker.user.domain;
 
 import com.goaltracker.auth.domain.UserCredential;
+import com.goaltracker.goal.domain.Goal;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,9 @@ public class User {
 
     private String username;
     private String email;
+
+    @OneToMany(mappedBy = "user")
+    private List<Goal> goals;
 
     @OneToMany(mappedBy = "follower")
     private List<FollowRelation> following = new ArrayList<>();

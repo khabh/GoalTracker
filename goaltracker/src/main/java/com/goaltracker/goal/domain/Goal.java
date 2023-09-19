@@ -1,6 +1,7 @@
 package com.goaltracker.goal.domain;
 
 import com.goaltracker.checklist.domain.Checklist;
+import com.goaltracker.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +27,9 @@ public class Goal {
 
     @OneToMany(mappedBy = "goal")
     private List<Checklist> checklists;
+
+    @ManyToOne
+    private User user;
 
     @Override
     public boolean equals(Object o) {
