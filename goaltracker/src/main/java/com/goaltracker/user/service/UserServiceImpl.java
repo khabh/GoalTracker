@@ -6,13 +6,10 @@ import com.goaltracker.goal.service.GoalService;
 import com.goaltracker.user.constant.RelationType;
 import com.goaltracker.user.domain.User;
 import com.goaltracker.auth.dto.UserSignUpDTO;
-import com.goaltracker.user.dto.EmailDuplicationCheckDTO;
-import com.goaltracker.user.dto.UserProfileEditViewDTO;
-import com.goaltracker.user.dto.UserProfileWithFollowStatsDTO;
-import com.goaltracker.user.dto.UsernameDuplicationCheckDTO;
+import com.goaltracker.user.dto.*;
 import com.goaltracker.user.dto.vo.FollowStatsVO;
+import com.goaltracker.user.exception.FollowRelationDuplicatedException;
 import com.goaltracker.user.exception.UserNotFoundException;
-import com.goaltracker.user.repository.FollowRelationRepository;
 import com.goaltracker.user.repository.UserRepository;
 import com.goaltracker.user.util.UserConverter;
 import com.goaltracker.user.util.UserProfileConverter;
@@ -26,13 +23,13 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final GoalService goalService;
-    private final FollowRelationRepository followRelationRepository;
+    private final FollowRelationService followRelationService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, GoalService goalService, FollowRelationRepository followRelationRepository) {
+    public UserServiceImpl(UserRepository userRepository, GoalService goalService, FollowRelationService followRelationService) {
         this.userRepository = userRepository;
         this.goalService = goalService;
-        this.followRelationRepository = followRelationRepository;
+        this.followRelationService = followRelationService;
     }
 
     @Override
@@ -75,7 +72,7 @@ public class UserServiceImpl implements UserService {
         User targetUser = userRepository.findById(targetUserId).orElseThrow(UserNotFoundException::new);
         Long loggedInUserId = getUserIdByUsername(loggedInAuthentication.getName());
         RelationType userRelationType = getUserRelationShip(targetUser.getId(), loggedInUserId);
-        FollowStatsVO followStats = followRelationRepository.findFollowStatsByUser(targetUser);
+        FollowStatsVO followStats = followRelationService.getUserFollowStats(targetUser);
 
         return UserProfileConverter.toUserProfileWithFollowStats(targetUser, userRelationType, followStats);
     }
@@ -86,11 +83,22 @@ public class UserServiceImpl implements UserService {
         return goalService.getUserActiveGoals(userId);
     }
 
+    @Override
+    public void followNewUser(CreateFollowRelationDTO createFollowRelationDTO, String followerName) {
+        User followee = userRepository.findById(createFollowRelationDTO.getFolloweeId()).orElseThrow(UserNotFoundException::new);
+        User follower = getUserByUsername(followerName);
+        if (followRelationService.isFollowRelationExists(followee.getId(), follower.getId())) {
+            throw new FollowRelationDuplicatedException();
+        }
+
+        followRelationService.createFollowRelation(followee, follower);
+    }
+
     private RelationType getUserRelationShip(Long targetUserId, Long loggedInUserId) {
         if (loggedInUserId.equals(targetUserId))
             return RelationType.SELF;
 
-        boolean isFollowingTargetUser = followRelationRepository.existsByFollowee_idAndFollower_id(targetUserId, loggedInUserId);
+        boolean isFollowingTargetUser = followRelationService.isFollowRelationExists(targetUserId, loggedInUserId);
         if (isFollowingTargetUser)
             return RelationType.FOLLOWING;
         return RelationType.NOT_FOLLOWING;

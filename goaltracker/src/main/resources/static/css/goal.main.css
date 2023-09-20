@@ -40,7 +40,7 @@
 }
 
 .follow-stats {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .user-profile-summary .follow-stats p {
@@ -83,7 +83,7 @@
     border: 1px solid #ddd;
     padding: 1.5rem;
     border-radius: 5px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-top: 2rem;
 }
 
@@ -152,4 +152,22 @@
 .plus-icon {
     font-size : 2em;
     margin-bottom : .5em;
+}
+
+.relation-button {
+    width: 100%;
+    padding: 0.5rem 0;
+    font-size: 1.4rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    background: #FFFFFF;
+    color: #F99B7D;
+    border: #F99B7D 2px solid;
+}
+
+.relation-button:hover {
+    background-color: #FFDAB9;
+}
+.profile-details {
+    width: 100%;
 }
