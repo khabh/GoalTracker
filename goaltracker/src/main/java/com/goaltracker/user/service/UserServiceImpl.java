@@ -89,8 +89,17 @@ public class UserServiceImpl implements UserService {
         User followee = userRepository.findById(createFollowRelationDTO.getFolloweeId())
                 .orElseThrow(FollowActionTargetNotFound::new);
         User follower = userRepository.findByUsername(followerName).orElseThrow(LoggedInUserNotFound::new);
-
         followRelationService.createFollowRelation(followee, follower);
+    }
+
+    @Override
+    public void unfollowUser(Long followeeId, String followerName) {
+        Long followerId = userRepository.findUserIdByUsername(followerName).orElseThrow(LoggedInUserNotFound::new);
+        if (!userRepository.existsById(followeeId)) {
+            throw new FollowActionTargetNotFound();
+        }
+
+        followRelationService.deleteFollowRelation(followeeId, followerId);
     }
 
     private RelationType getUserRelationShip(Long targetUserId, Long loggedInUserId) {

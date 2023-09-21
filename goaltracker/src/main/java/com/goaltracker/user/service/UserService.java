@@ -19,4 +19,5 @@ public interface UserService {
     UserProfileWithFollowStatsDTO getUserProfileWithFollowStats(Long targetUserId, Authentication loggedInAuthentication);
     List<ActiveGoalDTO> getUserActiveGoals(Long userId);
     void followNewUser(CreateFollowRelationDTO createFollowRelationDTO, String followerName);
+    void unfollowUser(Long followeeId, String followerName);
 }

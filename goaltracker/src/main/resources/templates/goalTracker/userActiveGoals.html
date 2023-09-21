@@ -35,8 +35,9 @@
                 </div>
                 <button th:if="${userProfile.relationType.equals(T(com.goaltracker.user.constant.RelationType).SELF)}" class="relation-button"
                         th:onclick="|location.href='@{/goal-tracker/profiles/me/edit}'|">Edit Profile</button>
-                <button th:if="${userProfile.relationType.equals(T(com.goaltracker.user.constant.RelationType).FOLLOWING)}" class="relation-button">Unfollow</button>
-                <form th:if="${userProfile.relationType.equals(T(com.goaltracker.user.constant.RelationType).NOT_FOLLOWING)}" th:action="@{/goal-tracker/follows}">
+                <button th:if="${userProfile.relationType.equals(T(com.goaltracker.user.constant.RelationType).FOLLOWING)}" class="relation-button"
+                        th:onclick="|unfollowUser(${userProfile.userId})|">Unfollow</button>
+                <form th:if="${userProfile.relationType.equals(T(com.goaltracker.user.constant.RelationType).NOT_FOLLOWING)}" th:action="@{/goal-tracker/follows}" class="follow-form">
                     <input name="followeeId" type="hidden" th:value="${userProfile.userId}">
                     <button class="relation-button" type="button" onclick="followUser(this.form)">Follow</button>
                 </form>

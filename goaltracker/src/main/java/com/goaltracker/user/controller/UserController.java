@@ -9,5 +9,6 @@ public interface UserController {
     ResponseEntity<UsernameDuplicationCheckDTO> checkUsernameDuplication(String username);
     String redirectToUserActiveGoals();
     String showUserAndActiveGoals(Long userId, Model model);
-    ResponseEntity<Object> followUser(CreateFollowRelationDTO createFollowRelationDTO);
+    ResponseEntity<Void> followUser(CreateFollowRelationDTO createFollowRelationDTO);
+    ResponseEntity<Void> unfollowUser(Long followeeId);
 }

@@ -7,4 +7,5 @@ public interface FollowRelationService {
     FollowStatsVO getUserFollowStats(User user);
     boolean isFollowRelationExists(Long followeeId, Long followerId);
     void createFollowRelation(User followee, User follower);
+    void deleteFollowRelation(Long followeeId, Long followerId);
 }

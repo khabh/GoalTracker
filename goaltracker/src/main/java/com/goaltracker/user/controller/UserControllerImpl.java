@@ -56,16 +56,28 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @PostMapping("/follows")
-    public ResponseEntity<Object> followUser(CreateFollowRelationDTO createFollowRelationDTO) {
+    public ResponseEntity<Void> followUser(CreateFollowRelationDTO createFollowRelationDTO) {
         String loggedInUsername = getLoggedInUsername();
-        try {
-            userService.followNewUser(createFollowRelationDTO, loggedInUsername);
-        } catch (InvalidFollowActionException followActionException) {
-            Map<String, String> error = new HashMap<>();
-            error.put("message", followActionException.getMessage());
-            return ResponseEntity.badRequest().body(error);
-        }
-        return ResponseEntity.ok("팔로우 성공");
+        userService.followNewUser(createFollowRelationDTO, loggedInUsername);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    @DeleteMapping("/users/{followeeId}/follows")
+    public ResponseEntity<Void> unfollowUser(@PathVariable("followeeId") Long followeeId) {
+        String loggedInUsername = getLoggedInUsername();
+        userService.unfollowUser(followeeId, loggedInUsername);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @ExceptionHandler(InvalidFollowActionException.class)
+    ResponseEntity<Map<String, String>> handleInvalidFollowActionException(InvalidFollowActionException followActionException) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", followActionException.getMessage());
+
+        return ResponseEntity.badRequest().body(error);
     }
 
     private static String getLoggedInUsername() {
