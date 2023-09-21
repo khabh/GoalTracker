@@ -8,7 +8,8 @@ import com.goaltracker.user.domain.User;
 import com.goaltracker.auth.dto.UserSignUpDTO;
 import com.goaltracker.user.dto.*;
 import com.goaltracker.user.dto.vo.FollowStatsVO;
-import com.goaltracker.user.exception.FollowRelationDuplicatedException;
+import com.goaltracker.user.exception.follow.FollowActionTargetNotFound;
+import com.goaltracker.user.exception.LoggedInUserNotFound;
 import com.goaltracker.user.exception.UserNotFoundException;
 import com.goaltracker.user.repository.UserRepository;
 import com.goaltracker.user.util.UserConverter;
@@ -85,11 +86,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void followNewUser(CreateFollowRelationDTO createFollowRelationDTO, String followerName) {
-        User followee = userRepository.findById(createFollowRelationDTO.getFolloweeId()).orElseThrow(UserNotFoundException::new);
-        User follower = getUserByUsername(followerName);
-        if (followRelationService.isFollowRelationExists(followee.getId(), follower.getId())) {
-            throw new FollowRelationDuplicatedException();
-        }
+        User followee = userRepository.findById(createFollowRelationDTO.getFolloweeId())
+                .orElseThrow(FollowActionTargetNotFound::new);
+        User follower = userRepository.findByUsername(followerName).orElseThrow(LoggedInUserNotFound::new);
 
         followRelationService.createFollowRelation(followee, follower);
     }

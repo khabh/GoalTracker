@@ -3,6 +3,8 @@ package com.goaltracker.user.service;
 import com.goaltracker.user.domain.FollowRelation;
 import com.goaltracker.user.domain.User;
 import com.goaltracker.user.dto.vo.FollowStatsVO;
+import com.goaltracker.user.exception.follow.AttemptedSelfFollowException;
+import com.goaltracker.user.exception.follow.FollowRelationDuplicatedException;
 import com.goaltracker.user.repository.FollowRelationRepository;
 import com.goaltracker.user.util.FollowRelationConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,17 @@ public class FollowRelationServiceImpl implements FollowRelationService {
 
     @Override
     public void createFollowRelation(User followee, User follower) {
+        validateFollowAction(followee, follower);
         FollowRelation followRelation = FollowRelationConverter.toFollowRelation(followee, follower);
         followRelationRepository.save(followRelation);
+    }
+
+    private void validateFollowAction(User followee, User follower) {
+        if (followee.getId().equals(follower.getId())) {
+            throw new AttemptedSelfFollowException();
+        }
+        if (isFollowRelationExists(followee.getId(), follower.getId())) {
+            throw new FollowRelationDuplicatedException();
+        }
     }
 }

@@ -2,8 +2,7 @@ package com.goaltracker.user.controller;
 
 import com.goaltracker.user.dto.CreateFollowRelationDTO;
 import com.goaltracker.user.dto.UsernameDuplicationCheckDTO;
-import com.goaltracker.user.exception.FollowRelationDuplicatedException;
-import com.goaltracker.user.exception.UserNotFoundException;
+import com.goaltracker.user.exception.follow.InvalidFollowActionException;
 import com.goaltracker.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -61,9 +60,9 @@ public class UserControllerImpl implements UserController {
         String loggedInUsername = getLoggedInUsername();
         try {
             userService.followNewUser(createFollowRelationDTO, loggedInUsername);
-        } catch (UserNotFoundException | FollowRelationDuplicatedException exception) {
+        } catch (InvalidFollowActionException followActionException) {
             Map<String, String> error = new HashMap<>();
-            error.put("message", exception.getMessage());
+            error.put("message", followActionException.getMessage());
             return ResponseEntity.badRequest().body(error);
         }
         return ResponseEntity.ok("팔로우 성공");
