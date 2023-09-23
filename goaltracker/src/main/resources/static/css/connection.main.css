@@ -1,0 +1,117 @@
+.tabs {
+    font-size: 2rem;
+    line-height: 48px;
+    margin: 0 10rem;
+}
+
+.tabs ul:before,
+.tabs ul:after {
+    content: "\0020";
+    display: block;
+    height: 0;
+    visibility: hidden;
+}
+
+.tabs ul:after {
+    clear: both;
+}
+
+.tabs ul {
+    margin: 0;
+    list-style: none;
+    padding: 0 6%;
+    border-bottom: 1px solid #f99b7d;
+    zoom: 1;
+}
+
+.tabs ul li {
+    position: relative;
+    float: left;
+    margin: 0;
+}
+
+.tabs ul li a {
+    background: #f5f5f5;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+    border: 1px solid #f99b7d;
+    color: #e38383;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+    padding: 6px 30px;
+    margin: 0 5px -1px 0;
+    /* Border Radius */
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    text-decoration: none;
+}
+
+.tabs ul li a:hover {
+    border-color: #f99b7d;
+    color: #f04e31;
+}
+
+.tabs ul li.active a {
+    background: #fff;
+    border-color: #f99b7d;
+    border-bottom: 1px solid #fff;
+    color: #e76161;
+    margin-top: -4px;
+    padding-top: 10px;
+}
+
+.connected-users-container {
+    margin: 1.5rem 8rem;
+}
+
+.profile-image img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #f99b7d;
+}
+
+.user-profile-wrapper {
+    margin: 1rem 5rem;
+    padding: 1rem 3rem;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-direction: row;
+    /* flex-wrap: wrap; */
+    align-items: center;
+}
+
+.user-name {
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 0.2rem;
+}
+
+.profile-details {
+    padding: 1rem 2rem;
+    flex-grow: 1;
+}
+
+.user-introduction {
+    color: #666;
+    font-size: 1.3rem;
+}
+
+.relation-button {
+    font-size: 1.5rem;
+    padding: 0.7rem 2rem;
+    border-radius: 15px;
+    background: #ffffff;
+    color: #f99b7d;
+    border: #f99b7d 2px solid;
+    flex-basis: 20%;
+}
+
+.relation-button:hover {
+    background-color: #ffdab9;
+}

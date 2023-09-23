@@ -6,6 +6,9 @@ body, h1, h2, h3, p, ul, li, label, input, textarea, button {
 
 body {
     font-family: Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
@@ -33,9 +36,12 @@ nav ul li a {
 
 main {
     padding: 2rem;
+    flex-grow: 1;
 }
 
 footer {
+    margin-bottom: 0;
+    margin-top: auto;
     text-align: center;
     padding: 1rem;
     background-color: #E76161;
