@@ -1,0 +1,55 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Following & Followers</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/connection.main.css}">
+  <script th:src="@{/js/tagify.js}"></script>
+  <script th:src="@{/js/followAction.js}"></script>
+</head>
+<body>
+<header>
+  <h1>GoalTracker</h1>
+  <nav>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Goals</a></li>
+      <li><a href="#">Profile</a></li>
+    </ul>
+  </nav>
+</header>
+<main>
+  <div class="tabs">
+    <ul>
+      <li class="active"><a href="#">Followers</a></li>
+      <li><a href="#">Following</a></li>
+    </ul>
+  </div>
+  <div class="connected-users-container">
+    <div class="user-profile-wrapper" th:each="userProfile : ${userProfiles}">
+      <div class="profile-image">
+        <img
+                src="https://blog.kakaocdn.net/dn/bOjQ1n/btrLqc2YHQB/913MZQGPgTXhngMbWnicJK/img.jpg"
+                alt="User Profile"
+                th:onclick="|location.href='@{/goal-tracker/users/{userId}/active-goals(userId=${userProfile.userId})'|"
+        />
+      </div>
+      <div class="profile-details">
+        <h3 class="user-name" th:text="${userProfile.username}"
+            th:onclick="|location.href='@{/goal-tracker/users/{userId}/active-goals(userId=${userProfile.userId})'|"></h3>
+        <p class="user-introduction" th:text="${userProfile.introduction}">자기소개</p>
+      </div>
+      <button th:if="${userProfile.relationType.equals(T(com.goaltracker.user.constant.RelationType).FOLLOWING)}"
+              th:onclick="|unfollowUser(${userProfile.userId})|" class="relation-button">Unfollow</button>
+      <form th:if="${userProfile.relationType.equals(T(com.goaltracker.user.constant.RelationType).NOT_FOLLOWING)}" th:action="@{/goal-tracker/follows}" class="follow-form">
+        <input name="followeeId" type="hidden" th:value="${userProfile.userId}">
+        <button class="relation-button relation-follow" type="button" onclick="followUser(this.form)">Follow</button>
+      </form>
+    </div>
+  </div>
+</main>
+<footer>
+  <p>&copy; 2023 GoalTracker. All rights reserved.</p>
+</footer>
+</body>
+</html>
