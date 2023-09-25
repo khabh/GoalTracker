@@ -109,7 +109,9 @@
     background: #ffffff;
     color: #f99b7d;
     border: #f99b7d 2px solid;
-    flex-basis: 20%;
+}
+.relation-follow {
+    padding: 0.7rem  2.709rem;
 }
 
 .relation-button:hover {
