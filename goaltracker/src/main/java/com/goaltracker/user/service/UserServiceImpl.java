@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -69,10 +70,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserProfileWithFollowStatsDTO getUserProfileWithFollowStats(Long targetUserId, Authentication loggedInAuthentication) {
+    public UserProfileWithFollowStatsDTO getUserProfileWithFollowStats(Long targetUserId, Authentication userAuthentication) {
         User targetUser = userRepository.findById(targetUserId).orElseThrow(UserNotFoundException::new);
-        Long loggedInUserId = getUserIdByUsername(loggedInAuthentication.getName());
-        RelationType userRelationType = getUserRelationShip(targetUser.getId(), loggedInUserId);
+        Long currentUserId = getUserIdByUsername(userAuthentication.getName());
+        RelationType userRelationType = getUserRelationShip(targetUser.getId(), currentUserId);
         FollowStatsVO followStats = followRelationService.getUserFollowStats(targetUser);
 
         return UserProfileConverter.toUserProfileWithFollowStats(targetUser, userRelationType, followStats);
@@ -102,11 +103,26 @@ public class UserServiceImpl implements UserService {
         followRelationService.deleteFollowRelation(followeeId, followerId);
     }
 
-    private RelationType getUserRelationShip(Long targetUserId, Long loggedInUserId) {
-        if (loggedInUserId.equals(targetUserId))
+    @Override
+    public List<UserWithRelationDTO> getUserFollowers(Long targetUserId, String currentUsername) {
+        User currentUser = userRepository.findByUsername(currentUsername).orElseThrow(LoggedInUserNotFound::new);
+        User targetUser = userRepository.findById(targetUserId).orElseThrow(RuntimeException::new);
+
+        return getUserFollowersWithRelation(currentUser, targetUser);
+    }
+
+    private List<UserWithRelationDTO> getUserFollowersWithRelation(User currentUser, User targetUser) {
+        List<User> followers = followRelationService.getFollowersOfUser(targetUser);
+        Set<Long> currentUserFollowings = followRelationService.getUserFollowingIds(currentUser);
+
+        return UserConverter.toUserProfilesWithRelation(followers, currentUser, currentUserFollowings);
+    }
+
+    private RelationType getUserRelationShip(Long targetUserId, Long currentUserId) {
+        if (currentUserId.equals(targetUserId))
             return RelationType.SELF;
 
-        boolean isFollowingTargetUser = followRelationService.isFollowRelationExists(targetUserId, loggedInUserId);
+        boolean isFollowingTargetUser = followRelationService.isFollowRelationExists(targetUserId, currentUserId);
         if (isFollowingTargetUser)
             return RelationType.FOLLOWING;
         return RelationType.NOT_FOLLOWING;

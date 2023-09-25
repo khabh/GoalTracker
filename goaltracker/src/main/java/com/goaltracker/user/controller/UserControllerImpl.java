@@ -1,6 +1,7 @@
 package com.goaltracker.user.controller;
 
 import com.goaltracker.user.dto.CreateFollowRelationDTO;
+import com.goaltracker.user.dto.UserWithRelationDTO;
 import com.goaltracker.user.dto.UsernameDuplicationCheckDTO;
 import com.goaltracker.user.exception.follow.InvalidFollowActionException;
 import com.goaltracker.user.service.UserService;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -70,6 +72,16 @@ public class UserControllerImpl implements UserController {
         userService.unfollowUser(followeeId, loggedInUsername);
 
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    @GetMapping("/users/{userId}/followers")
+    public String showFollowersOfUser(@PathVariable("userId") Long userId, Model model) {
+        String loggedInUsername = getLoggedInUsername();
+        List<UserWithRelationDTO> userFollowers = userService.getUserFollowers(userId, loggedInUsername);
+        model.addAttribute("userProfiles", userFollowers);
+
+        return "goalTracker/connectedUsers";
     }
 
     @ExceptionHandler(InvalidFollowActionException.class)

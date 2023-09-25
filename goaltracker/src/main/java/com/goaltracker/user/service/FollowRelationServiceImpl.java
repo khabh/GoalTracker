@@ -11,6 +11,9 @@ import com.goaltracker.user.util.FollowRelationConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
+
 @Service
 public class FollowRelationServiceImpl implements FollowRelationService {
 
@@ -44,6 +47,16 @@ public class FollowRelationServiceImpl implements FollowRelationService {
             throw new FollowRelationNotFoundException();
         }
         followRelationRepository.deleteByFolloweeIdAndFollowerId(followeeId, followerId);
+    }
+
+    @Override
+    public List<User> getFollowersOfUser(User user) {
+        return followRelationRepository.findFollowersOfUser(user);
+    }
+
+    @Override
+    public Set<Long> getUserFollowingIds(User user) {
+         return Set.copyOf(followRelationRepository.getUserFollowingIds(user.getId()));
     }
 
     private void validateFollowAction(User followee, User follower) {

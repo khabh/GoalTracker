@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface FollowRelationRepository extends JpaRepository<FollowRelation, Long> {
 
@@ -27,4 +29,12 @@ public interface FollowRelationRepository extends JpaRepository<FollowRelation, 
             "FollowRelation followRelation " +
             "WHERE followRelation.followee.id = :followeeId AND followRelation.follower.id = :followerId")
     void deleteByFolloweeIdAndFollowerId(@Param("followeeId") Long followeeId, @Param("followerId") Long followerId);
+
+    @Query("SELECT followRelation.follower " +
+            "FROM FollowRelation followRelation " +
+            "WHERE followRelation.followee = :user")
+    List<User> findFollowersOfUser(@Param("user") User user);
+
+    @Query(value = "SELECT followee_id FROM follow_relations WHERE follow_relations.follower_id = :userId", nativeQuery = true)
+    List<Long> getUserFollowingIds(@Param("userId") Long userId);
 }
