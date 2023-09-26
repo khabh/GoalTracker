@@ -33,7 +33,13 @@
             <div class="profile-details">
                 <h3 class="user-name" th:text="${userProfile.username}"></h3>
                 <div class="follow-stats">
-                    <p><i class="fa-solid fa-heart"></i> Followers <strong th:text="${userProfile.followerCount}"></strong> · Following <strong th:text="${userProfile.followingCount}"></strong></p>
+                    <p>
+                        <i class="fa-solid fa-heart" ></i>
+                        <a th:text="|Followers ${userProfile.followerCount}|"
+                           th:href="@{/goal-tracker/users/{userId}/followers(userId=${userProfile.userId})}">
+                        </a> · <a th:text="|Followings ${userProfile.followingCount}|"
+                                  th:href="@{/goal-tracker/users/{userId}/followings(userId=${userProfile.userId})}"></a>
+                    </p>
                 </div>
                 <button th:if="${userProfile.relationType.equals(T(com.goaltracker.user.constant.RelationType).SELF)}" class="relation-button"
                         th:onclick="|location.href='@{/goal-tracker/profiles/me/edit}'|">Edit Profile</button>

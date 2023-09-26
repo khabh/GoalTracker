@@ -120,3 +120,10 @@
 .follow-form {
     margin-bottom: 0;
 }
+.back-button {
+    color: #E76161;
+    font-size: 2rem;
+    margin-left: 0;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+}

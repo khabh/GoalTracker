@@ -6,6 +6,7 @@
   <link rel="stylesheet" th:href="@{/css/connection.main.css}">
   <script th:src="@{/js/tagify.js}"></script>
   <script th:src="@{/js/followAction.js}"></script>
+  <script th:src="@{/js/fontawesome.js}"></script>
 </head>
 <body>
 <header>
@@ -19,6 +20,7 @@
   </nav>
 </header>
 <main>
+  <i class="fa-solid fa-arrow-left back-button" onclick="history.go(-1)"></i>
   <div class="tabs">
     <ul th:if="${connectionType.equals(T(com.goaltracker.user.constant.ConnectionType).FOLLOWING)}">
       <li><a th:href="@{/goal-tracker/users/{userId}/followers(userId=${userId})}">Followers</a></li>
