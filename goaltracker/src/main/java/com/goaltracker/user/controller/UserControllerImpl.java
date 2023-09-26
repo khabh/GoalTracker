@@ -4,6 +4,7 @@ import com.goaltracker.user.constant.ConnectionType;
 import com.goaltracker.user.dto.CreateFollowRelationDTO;
 import com.goaltracker.user.dto.UserWithRelationDTO;
 import com.goaltracker.user.dto.UsernameDuplicationCheckDTO;
+import com.goaltracker.user.exception.ConnectionTargetNotFoundException;
 import com.goaltracker.user.exception.follow.InvalidFollowActionException;
 import com.goaltracker.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +104,11 @@ public class UserControllerImpl implements UserController {
         error.put("message", followActionException.getMessage());
 
         return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(ConnectionTargetNotFoundException.class)
+    String handleGetUserConnectionException(ConnectionTargetNotFoundException connectionTargetNotFoundException) {
+        return "/error/notFound";
     }
 
     private static String getLoggedInUsername() {

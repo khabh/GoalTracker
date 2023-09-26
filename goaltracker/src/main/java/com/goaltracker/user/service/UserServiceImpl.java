@@ -8,6 +8,7 @@ import com.goaltracker.user.domain.User;
 import com.goaltracker.auth.dto.UserSignUpDTO;
 import com.goaltracker.user.dto.*;
 import com.goaltracker.user.dto.vo.FollowStatsVO;
+import com.goaltracker.user.exception.ConnectionTargetNotFoundException;
 import com.goaltracker.user.exception.follow.FollowActionTargetNotFound;
 import com.goaltracker.user.exception.LoggedInUserNotFound;
 import com.goaltracker.user.exception.UserNotFoundException;
@@ -120,7 +121,7 @@ public class UserServiceImpl implements UserService {
 
     private List<UserWithRelationDTO> getConnectedUsersWithRelation(Long targetUserId, String currentUsername, Function<User, List<User>> getConnectedUsers) {
         User currentUser = getCurrentLoggedInUser(currentUsername);
-        User targetUser = userRepository.findById(targetUserId).orElseThrow(RuntimeException::new);
+        User targetUser = userRepository.findById(targetUserId).orElseThrow(ConnectionTargetNotFoundException::new);
         Set<Long> currentUserFollowings = followRelationService.getUserFollowingIds(currentUser);
         List<User> usersConnectedWithTargetUser = getConnectedUsers.apply(targetUser);
 
