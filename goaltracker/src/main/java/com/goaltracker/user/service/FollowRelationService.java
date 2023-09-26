@@ -17,4 +17,5 @@ public interface FollowRelationService {
 
     List<User> getFollowersOfUser(User user);
     Set<Long> getUserFollowingIds(User user);
+    List<User> getUserFollowings(User user);
 }

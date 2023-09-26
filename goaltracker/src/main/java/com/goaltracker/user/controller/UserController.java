@@ -12,4 +12,5 @@ public interface UserController {
     ResponseEntity<Void> followUser(CreateFollowRelationDTO createFollowRelationDTO);
     ResponseEntity<Void> unfollowUser(Long followeeId);
     String showFollowersOfUser(Long userId, Model model);
+    String showUserFollowings(Long userId, Model model);
 }

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -89,7 +90,7 @@ public class UserServiceImpl implements UserService {
     public void followNewUser(CreateFollowRelationDTO createFollowRelationDTO, String followerName) {
         User followee = userRepository.findById(createFollowRelationDTO.getFolloweeId())
                 .orElseThrow(FollowActionTargetNotFound::new);
-        User follower = userRepository.findByUsername(followerName).orElseThrow(LoggedInUserNotFound::new);
+        User follower = getCurrentLoggedInUser(followerName);
         followRelationService.createFollowRelation(followee, follower);
     }
 
@@ -104,18 +105,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserWithRelationDTO> getUserFollowers(Long targetUserId, String currentUsername) {
-        User currentUser = userRepository.findByUsername(currentUsername).orElseThrow(LoggedInUserNotFound::new);
-        User targetUser = userRepository.findById(targetUserId).orElseThrow(RuntimeException::new);
-
-        return getUserFollowersWithRelation(currentUser, targetUser);
+    public List<UserWithRelationDTO> getFollowersOfUser(Long targetUserId, String currentUsername) {
+        return getConnectedUsersWithRelation(targetUserId, currentUsername, followRelationService::getFollowersOfUser);
     }
 
-    private List<UserWithRelationDTO> getUserFollowersWithRelation(User currentUser, User targetUser) {
-        List<User> followers = followRelationService.getFollowersOfUser(targetUser);
-        Set<Long> currentUserFollowings = followRelationService.getUserFollowingIds(currentUser);
+    @Override
+    public List<UserWithRelationDTO> getUserFollowings(Long targetUserId, String currentUsername) {
+        return getConnectedUsersWithRelation(targetUserId, currentUsername, followRelationService::getUserFollowings);
+    }
 
-        return UserConverter.toUserProfilesWithRelation(followers, currentUser, currentUserFollowings);
+    private User getCurrentLoggedInUser(String currentUsername) {
+        return userRepository.findByUsername(currentUsername).orElseThrow(LoggedInUserNotFound::new);
+    }
+
+    private List<UserWithRelationDTO> getConnectedUsersWithRelation(Long targetUserId, String currentUsername, Function<User, List<User>> getConnectedUsers) {
+        User currentUser = getCurrentLoggedInUser(currentUsername);
+        User targetUser = userRepository.findById(targetUserId).orElseThrow(RuntimeException::new);
+        Set<Long> currentUserFollowings = followRelationService.getUserFollowingIds(currentUser);
+        List<User> usersConnectedWithTargetUser = getConnectedUsers.apply(targetUser);
+
+        return UserConverter.toUserProfilesWithRelation(usersConnectedWithTargetUser, currentUser, currentUserFollowings);
     }
 
     private RelationType getUserRelationShip(Long targetUserId, Long currentUserId) {

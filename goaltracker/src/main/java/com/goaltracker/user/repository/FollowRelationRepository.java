@@ -37,4 +37,9 @@ public interface FollowRelationRepository extends JpaRepository<FollowRelation, 
 
     @Query(value = "SELECT followee_id FROM follow_relations WHERE follow_relations.follower_id = :userId", nativeQuery = true)
     List<Long> getUserFollowingIds(@Param("userId") Long userId);
+
+    @Query("SELECT followRelation.followee " +
+            "FROM FollowRelation followRelation " +
+            "WHERE followRelation.follower = :user")
+    List<User> getUserFollowings(@Param("user") User user);
 }

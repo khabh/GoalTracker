@@ -59,6 +59,11 @@ public class FollowRelationServiceImpl implements FollowRelationService {
          return Set.copyOf(followRelationRepository.getUserFollowingIds(user.getId()));
     }
 
+    @Override
+    public List<User> getUserFollowings(User user) {
+        return followRelationRepository.getUserFollowings(user);
+    }
+
     private void validateFollowAction(User followee, User follower) {
         if (followee.getId().equals(follower.getId())) {
             throw new AttemptedSelfFollowException();

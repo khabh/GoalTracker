@@ -1,5 +1,6 @@
 package com.goaltracker.user.controller;
 
+import com.goaltracker.user.constant.ConnectionType;
 import com.goaltracker.user.dto.CreateFollowRelationDTO;
 import com.goaltracker.user.dto.UserWithRelationDTO;
 import com.goaltracker.user.dto.UsernameDuplicationCheckDTO;
@@ -77,9 +78,21 @@ public class UserControllerImpl implements UserController {
     @Override
     @GetMapping("/users/{userId}/followers")
     public String showFollowersOfUser(@PathVariable("userId") Long userId, Model model) {
-        String loggedInUsername = getLoggedInUsername();
-        List<UserWithRelationDTO> userFollowers = userService.getUserFollowers(userId, loggedInUsername);
+        List<UserWithRelationDTO> userFollowers = userService.getFollowersOfUser(userId, getLoggedInUsername());
+        model.addAttribute("userId", userId);
         model.addAttribute("userProfiles", userFollowers);
+        model.addAttribute("connectionType", ConnectionType.FOLLOWER);
+
+        return "goalTracker/connectedUsers";
+    }
+
+    @Override
+    @GetMapping("/users/{userId}/followings")
+    public String showUserFollowings(@PathVariable("userId") Long userId, Model model) {
+        List<UserWithRelationDTO> userFollowers = userService.getUserFollowings(userId, getLoggedInUsername());
+        model.addAttribute("userId", userId);
+        model.addAttribute("userProfiles", userFollowers);
+        model.addAttribute("connectionType", ConnectionType.FOLLOWING);
 
         return "goalTracker/connectedUsers";
     }
