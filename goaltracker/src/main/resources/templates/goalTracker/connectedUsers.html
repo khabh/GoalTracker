@@ -20,9 +20,13 @@
 </header>
 <main>
   <div class="tabs">
-    <ul>
-      <li class="active"><a href="#">Followers</a></li>
-      <li><a href="#">Following</a></li>
+    <ul th:if="${connectionType.equals(T(com.goaltracker.user.constant.ConnectionType).FOLLOWING)}">
+      <li><a th:href="@{/goal-tracker/users/{userId}/followers(userId=${userId})}">Followers</a></li>
+      <li class="active"><a th:href="@{/goal-tracker/users/{userId}/followings(userId=${userId})}">Following</a></li>
+    </ul>
+    <ul th:if="${connectionType.equals(T(com.goaltracker.user.constant.ConnectionType).FOLLOWER)}">
+      <li class="active"><a th:href="@{/goal-tracker/users/{userId}/followers(userId=${userId})}">Followers</a></li>
+      <li><a th:href="@{/goal-tracker/users/{userId}/followings(userId=${userId})}">Following</a></li>
     </ul>
   </div>
   <div class="connected-users-container">
@@ -31,12 +35,12 @@
         <img
                 src="https://blog.kakaocdn.net/dn/bOjQ1n/btrLqc2YHQB/913MZQGPgTXhngMbWnicJK/img.jpg"
                 alt="User Profile"
-                th:onclick="|location.href='@{/goal-tracker/users/{userId}/active-goals(userId=${userProfile.userId})'|"
+                th:onclick="|location.href='@{/goal-tracker/users/{userId}/active-goals(userId=${userProfile.userId})}'|"
         />
       </div>
       <div class="profile-details">
         <h3 class="user-name" th:text="${userProfile.username}"
-            th:onclick="|location.href='@{/goal-tracker/users/{userId}/active-goals(userId=${userProfile.userId})'|"></h3>
+            th:onclick="|location.href='@{/goal-tracker/users/{userId}/active-goals(userId=${userProfile.userId})}'|"></h3>
         <p class="user-introduction" th:text="${userProfile.introduction}">자기소개</p>
       </div>
       <button th:if="${userProfile.relationType.equals(T(com.goaltracker.user.constant.RelationType).FOLLOWING)}"
