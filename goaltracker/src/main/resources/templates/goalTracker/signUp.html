@@ -71,23 +71,38 @@
     const url = `/goal-tracker/users/username-check/${encodeURIComponent(username)}`;
     fetch(url, {method: 'GET'}).then(response => {
       response.json().then(data => {
-        if (data["isDuplicated"]) {
-          displayCheckUsernameButton();
-          Swal.fire({
-            icon: 'error',
-            title: '이미 사용 중인 이름입니다.',
-          });
-        } else {
-          isUsernameChecked = true;
-          checkUsernameButton.style.display = 'none';
-          checkedIcon.style.display = 'inline-block';
+        if (!data["isInvalidFormat"] && !data["isDuplicated"]) {
+          hideCheckUsernameButton();
           Swal.fire({
             icon: 'success',
             title: '사용 가능한 이름입니다.',
           });
         }
+        else {
+          displayCheckUsernameButton();
+          const usernameError = "사용자 이름 오류";
+          if (data["isDuplicated"]) {
+            displayErrorNotion(usernameError, "이미 사용 중인 이름입니다.");
+          } else {
+            displayErrorNotion(usernameError, "알파벳, 하이픈과 언더바로 이루어진 3과 15 사이 길이 문자열만 허용됩니다.")
+          }
+        }
       });
     });
+  }
+
+  function displayErrorNotion(errorTitle, errorMessage) {
+    Swal.fire({
+      icon: 'error',
+      title: errorTitle,
+      text: errorMessage
+    });
+  }
+
+  function hideCheckUsernameButton() {
+    isUsernameChecked = true;
+    checkUsernameButton.style.display = 'none';
+    checkedIcon.style.display = 'inline-block';
   }
 
   function displayCheckUsernameButton() {

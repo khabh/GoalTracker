@@ -15,6 +15,7 @@ import com.goaltracker.user.exception.UserNotFoundException;
 import com.goaltracker.user.repository.UserRepository;
 import com.goaltracker.user.util.UserConverter;
 import com.goaltracker.user.util.UserProfileConverter;
+import com.goaltracker.user.util.UsernameValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -54,9 +55,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UsernameDuplicationCheckDTO checkUsernameDuplication(String username) {
-        boolean isDuplicated = userRepository.existsByUsername(username);
-        return new UsernameDuplicationCheckDTO(isDuplicated);
+    public UsernameValidationResponseDTO checkUsernameDuplication(String username) {
+        if (!UsernameValidator.isValid(username)) {
+            return UsernameValidationResponseDTO.invalidFormat();
+        }
+        if (userRepository.existsByUsername(username)) {
+            return UsernameValidationResponseDTO.duplicated();
+        }
+        return UsernameValidationResponseDTO.valid();
     }
 
     @Override

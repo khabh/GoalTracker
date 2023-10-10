@@ -3,7 +3,7 @@ package com.goaltracker.user.controller;
 import com.goaltracker.user.constant.ConnectionType;
 import com.goaltracker.user.dto.CreateFollowRelationDTO;
 import com.goaltracker.user.dto.UserWithRelationDTO;
-import com.goaltracker.user.dto.UsernameDuplicationCheckDTO;
+import com.goaltracker.user.dto.UsernameValidationResponseDTO;
 import com.goaltracker.user.exception.ConnectionTargetNotFoundException;
 import com.goaltracker.user.exception.follow.InvalidFollowActionException;
 import com.goaltracker.user.service.UserService;
@@ -33,9 +33,9 @@ public class UserControllerImpl implements UserController {
 
     @Override
     @GetMapping("/users/username-check/{username}")
-    public @ResponseBody ResponseEntity<UsernameDuplicationCheckDTO> checkUsernameDuplication(@PathVariable String username) {
-        UsernameDuplicationCheckDTO usernameDuplicationCheckDTO = userService.checkUsernameDuplication(username);
-        return ResponseEntity.ok(usernameDuplicationCheckDTO);
+    public @ResponseBody ResponseEntity<UsernameValidationResponseDTO> checkUsernameDuplication(@PathVariable String username) {
+        UsernameValidationResponseDTO usernameValidationResponseDTO = userService.checkUsernameDuplication(username);
+        return ResponseEntity.ok(usernameValidationResponseDTO);
     }
 
     @Override

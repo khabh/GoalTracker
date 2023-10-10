@@ -13,7 +13,7 @@ public interface UserService {
     void signUpUserWithCredential(UserSignUpDTO userSignUpDTO, UserCredential userCredential);
     UserProfileEditViewDTO getEditViewWithoutProfileByUsername(String username);
     User getUserByUsername(String username);
-    UsernameDuplicationCheckDTO checkUsernameDuplication(String username);
+    UsernameValidationResponseDTO checkUsernameDuplication(String username);
     EmailDuplicationCheckDTO checkEmailDuplication(String email);
     Long getUserIdByUsername(String username);
     UserProfileWithFollowStatsDTO getUserProfileWithFollowStats(Long targetUserId, Authentication loggedInAuthentication);
