@@ -4,6 +4,6 @@ import com.goaltracker.user.dto.UserProfileChangeDTO;
 import com.goaltracker.user.dto.UserProfileEditViewDTO;
 
 public interface UserAndUserProfileService {
-    UserProfileEditViewDTO getUserProfileEditView();
-    void editOrCreateUserProfile(UserProfileChangeDTO userProfileChangeDTO);
+    UserProfileEditViewDTO getUserProfileEditView(String username);
+    void editOrCreateUserProfile(String username, UserProfileChangeDTO userProfileChangeDTO);
 }

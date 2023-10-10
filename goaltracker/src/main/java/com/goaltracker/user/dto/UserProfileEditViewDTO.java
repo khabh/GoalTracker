@@ -1,12 +1,12 @@
 package com.goaltracker.user.dto;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
+@Builder
 public class UserProfileEditViewDTO {
-    private String username;
+    private String nickname;
     private String email;
     private String introduction;
     private String interests;

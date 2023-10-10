@@ -44,14 +44,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserProfileEditViewDTO getEditViewWithoutProfileByUsername(String username){
-        String email = userRepository.findEmailByUsername(username).orElseThrow();
-        return UserProfileConverter.toUserProfileEditView(username, email);
-    }
-
-    @Override
     public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow();
+        return userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
     }
 
     @Override

@@ -1,4 +1,4 @@
-const existingErrors = {interests: false, introduction: false};
+const existingErrors = {interests: false, introduction: false, nickname: false};
 document.addEventListener("DOMContentLoaded", function() {
     new Tagify(document.getElementById('interests'));
     const saveButton = document.getElementById("save-button");
@@ -38,12 +38,35 @@ document.addEventListener("DOMContentLoaded", function() {
                         deleteInterestsError(form);
                         existingErrors.interests = false;
                     }
+
+                    if (errors.hasOwnProperty("nickname") && !existingErrors.nickname) {
+                        let nicknameField = document.querySelector("#nickname");
+                        let introductionError = createErrorMessage(errors.nickname);
+
+                        nicknameField.classList.add("error-input");
+                        nicknameField.parentNode.appendChild(introductionError);
+                        existingErrors.introduction = true;
+                    } else if (!errors.hasOwnProperty("nickname") && existingErrors.nickname) {
+                        deleteNicknameError(form);
+                        existingErrors.nickname = false;
+                    }
                 });
             } else {
-                window.location.href = response.headers.get('Location');
+                Swal.fire({
+                    icon: 'success',
+                    title: '변경 사항이 저장되었습니다.',
+                });
             }
-        });
+        }).catch();
     });
+
+    function deleteNicknameError(form) {
+        const nickname = form.querySelector('input[class="error-input"]');
+        nickname.removeAttribute("class");
+        const formGroup = nickname.parentNode;
+        formGroup.removeChild(formGroup.querySelector('span[class="error-message"]'));
+    }
+
 
     function deleteIntroductionError(form) {
         const introduction = form.querySelector('textarea[class="error-input"]');

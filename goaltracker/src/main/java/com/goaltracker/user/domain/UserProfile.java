@@ -20,6 +20,7 @@ public class UserProfile {
     @OneToMany(mappedBy = "userProfile")
     private List<UserProfileInterest> userProfileInterests;
 
+    private String nickname;
     private String profileImagePath;
     private String introduction;
 

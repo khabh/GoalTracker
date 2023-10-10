@@ -7,6 +7,8 @@
   <link th:href="@{/css/tagify.css}" rel="stylesheet" type="text/css"/>
   <link th:href="@{/css/profile.edit.css}" rel="stylesheet">
   <script th:src="@{/js/tagify.js}"></script>
+  <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 </head>
 <body>
 <header>
@@ -27,14 +29,12 @@
           <img src="https://blog.kakaocdn.net/dn/bOjQ1n/btrLqc2YHQB/913MZQGPgTXhngMbWnicJK/img.jpg" alt="User Profile"/>
       </div>
       <div class="form-group">
-        <label for="username">사용자 이름</label>
+        <label for="nickname">닉네임</label>
         <input
                 type="text"
-                id="username"
-                name="username"
-                th:value="${userProfile.username}"
-                required
-                readonly
+                id="nickname"
+                name="nickname"
+                th:value="${userProfile.nickname} != null ? ${userProfile.nickname} : ''"
         />
       </div>
       <div class="form-group">

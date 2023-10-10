@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,7 +33,8 @@ public class UserProfileControllerImpl implements UserProfileController {
     @GetMapping("/me/edit")
     @PreAuthorize("hasAnyRole('USER')")
     public String showUserProfileEditForm(Model model) {
-        model.addAttribute("userProfile", userAndUserProfileService.getUserProfileEditView());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        model.addAttribute("userProfile", userAndUserProfileService.getUserProfileEditView(username));
         return "goalTracker/profileEditForm";
     }
 
@@ -46,9 +48,8 @@ public class UserProfileControllerImpl implements UserProfileController {
             }
             return ResponseEntity.badRequest().body(errors);
         }
-        userAndUserProfileService.editOrCreateUserProfile(userProfileChangeDTO);
-        return ResponseEntity.ok()
-                .header("Location", "/goal-tracker/profiles/me/edit")
-                .build();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        userAndUserProfileService.editOrCreateUserProfile(username, userProfileChangeDTO);
+        return ResponseEntity.ok().build();
     }
 }

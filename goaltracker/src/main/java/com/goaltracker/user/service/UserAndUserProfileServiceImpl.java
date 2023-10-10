@@ -1,12 +1,11 @@
 package com.goaltracker.user.service;
 
 import com.goaltracker.user.domain.User;
-import com.goaltracker.user.domain.UserProfile;
 import com.goaltracker.user.dto.UserProfileChangeDTO;
 import com.goaltracker.user.dto.UserProfileEditViewDTO;
+import com.goaltracker.user.util.UserProfileConverter;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,28 +20,15 @@ public class UserAndUserProfileServiceImpl implements UserAndUserProfileService 
     }
 
     @Override
-    public UserProfileEditViewDTO getUserProfileEditView() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserProfileEditViewDTO userProfileEditView = userProfileService.getProfileEditView(username);
-        if (userProfileEditView != null)
-            return userProfileEditView;
-        return userService.getEditViewWithoutProfileByUsername(username);
+    public UserProfileEditViewDTO getUserProfileEditView(String username) {
+        User user = userService.getUserByUsername(username);
+        return UserProfileConverter.toUserProfileEditView(user);
     }
 
     @Override
     @Transactional
-    public void editOrCreateUserProfile(UserProfileChangeDTO userProfileChangeDTO) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    public void editOrCreateUserProfile(String username, UserProfileChangeDTO userProfileChangeDTO) {
         User user = userService.getUserByUsername(username);
-        if (user.getUserProfile() == null) {
-            initializeUserProfileForUser(user, userProfileChangeDTO);
-            return;
-        }
-        userProfileService.editUserProfile(user.getUserProfile(), userProfileChangeDTO);
-    }
-
-    private void initializeUserProfileForUser(User user, UserProfileChangeDTO userProfileChangeDTO) {
-        UserProfile userProfile = userProfileService.createUserProfile(userProfileChangeDTO);
-        user.setUserProfile(userProfile);
+        userProfileService.changeUserProfile(user, userProfileChangeDTO);
     }
 }

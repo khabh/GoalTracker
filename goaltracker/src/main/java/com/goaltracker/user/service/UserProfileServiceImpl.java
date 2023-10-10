@@ -1,9 +1,9 @@
 package com.goaltracker.user.service;
 
 import com.goaltracker.user.domain.Interest;
+import com.goaltracker.user.domain.User;
 import com.goaltracker.user.domain.UserProfile;
 import com.goaltracker.user.dto.UserProfileChangeDTO;
-import com.goaltracker.user.dto.UserProfileEditViewDTO;
 import com.goaltracker.user.repository.UserProfileRepository;
 import com.goaltracker.user.util.UserProfileConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +27,24 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public UserProfileEditViewDTO getProfileEditView(String username) {
-        UserProfile userProfile = userProfileRepository.getUserProfileByUser_Username(username);
-        if (userProfile == null)
-            return null;
-        return UserProfileConverter.toUserProfileEditView(userProfile);
+    public void changeUserProfile(User user, UserProfileChangeDTO userProfileChangeDTO) {
+        Optional.ofNullable(user.getUserProfile())
+                .ifPresentOrElse(userProfile -> editUserProfile(userProfile, userProfileChangeDTO),
+                        () -> initializeUserProfile(user, userProfileChangeDTO));
     }
 
-    @Override
-    public UserProfile createUserProfile(UserProfileChangeDTO userProfileChangeDTO) {
+    private void editUserProfile(UserProfile userProfile, UserProfileChangeDTO userProfileChangeDTO) {
+        userProfile.setNickname(userProfileChangeDTO.getNickname());
+        userProfile.setIntroduction(userProfileChangeDTO.getIntroduction());
+        editUserProfileInterests(userProfile, userProfileChangeDTO.getInterests());
+    }
+
+    private void initializeUserProfile(User user, UserProfileChangeDTO userProfileChangeDTO) {
+        UserProfile createdUserProfile = createUserProfile(userProfileChangeDTO);
+        user.setUserProfile(createdUserProfile);
+    }
+
+    private UserProfile createUserProfile(UserProfileChangeDTO userProfileChangeDTO) {
         UserProfile userProfile = UserProfileConverter.toUserProfile(userProfileChangeDTO);
         userProfileRepository.save(userProfile);
         if (!hasEmptyTagNames(userProfileChangeDTO.getInterests())) {
@@ -45,11 +54,6 @@ public class UserProfileServiceImpl implements UserProfileService {
         return userProfile;
     }
 
-    @Override
-    public void editUserProfile(UserProfile userProfile, UserProfileChangeDTO userProfileChangeDTO) {
-        userProfile.setIntroduction(userProfileChangeDTO.getIntroduction());
-        editUserProfileInterests(userProfile, userProfileChangeDTO.getInterests());
-    }
 
     private void editUserProfileInterests(UserProfile userProfile, List<String> tagNames) {
         Set<Interest> currentInterests = userProfileInterestService.getInterestsByUserProfile(userProfile);

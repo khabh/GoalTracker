@@ -11,7 +11,6 @@ import java.util.List;
 
 public interface UserService {
     void signUpUserWithCredential(UserSignUpDTO userSignUpDTO, UserCredential userCredential);
-    UserProfileEditViewDTO getEditViewWithoutProfileByUsername(String username);
     User getUserByUsername(String username);
     UsernameValidationResponseDTO checkUsernameDuplication(String username);
     EmailDuplicationCheckDTO checkEmailDuplication(String email);

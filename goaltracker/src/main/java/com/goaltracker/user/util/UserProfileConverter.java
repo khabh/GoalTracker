@@ -10,6 +10,7 @@ import com.goaltracker.user.dto.UserProfileWithFollowStatsDTO;
 import com.goaltracker.user.dto.vo.FollowStatsVO;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class UserProfileConverter {
@@ -22,32 +23,32 @@ public class UserProfileConverter {
                 .collect(Collectors.joining(", "));
     }
 
-    public static UserProfileEditViewDTO toUserProfileEditView(UserProfile userProfile) {
-        UserProfileEditViewDTO userProfileEditView = new UserProfileEditViewDTO();
-        List<UserProfileInterest> userProfileInterests = userProfile.getUserProfileInterests();
-        User user = userProfile.getUser();
 
-        userProfileEditView.setIntroduction(userProfile.getIntroduction());
-        userProfileEditView.setEmail(user.getEmail());
-        userProfileEditView.setUsername(user.getUsername());
-        if (userProfileInterests != null) {
-            userProfileEditView.setInterests(flattenInterests(userProfileInterests));
-        }
-
-        return userProfileEditView;
+    public static UserProfileEditViewDTO toUserProfileEditView(User user) {
+        return Optional.ofNullable(user.getUserProfile())
+                .map(userProfile -> buildEditViewWithProfile(user, userProfile))
+                .orElseGet(() -> buildEditViewWithoutProfile(user));
     }
 
-    public static UserProfileEditViewDTO toUserProfileEditView(String username, String email) {
-        UserProfileEditViewDTO userProfileEditView = new UserProfileEditViewDTO();
-        userProfileEditView.setEmail(email);
-        userProfileEditView.setUsername(username);
+    private static UserProfileEditViewDTO buildEditViewWithProfile(User user, UserProfile userProfile) {
+        return UserProfileEditViewDTO.builder()
+                .nickname(userProfile.getNickname())
+                .email(user.getEmail())
+                .introduction(userProfile.getIntroduction())
+                .interests(flattenInterests(userProfile.getUserProfileInterests()))
+                .build();
+    }
 
-        return userProfileEditView;
+    private static UserProfileEditViewDTO buildEditViewWithoutProfile(User user) {
+        return UserProfileEditViewDTO.builder()
+                .email(user.getEmail())
+                .build();
     }
 
     public static UserProfile toUserProfile(UserProfileChangeDTO userProfileChangeDTO) {
         UserProfile userProfile = new UserProfile();
         userProfile.setIntroduction(userProfileChangeDTO.getIntroduction());
+        userProfile.setNickname(userProfileChangeDTO.getNickname());
 
         return userProfile;
     }
