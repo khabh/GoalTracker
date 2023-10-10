@@ -54,20 +54,28 @@ public class UserProfileConverter {
     }
 
     public static UserProfileWithFollowStatsDTO toUserProfileWithFollowStats(User user, RelationType relationType, FollowStatsVO followStats) {
-        UserProfile userProfile = user.getUserProfile();
+        UserProfileWithFollowStatsDTO userProfileWithFollowStatsDTO = UserProfileWithFollowStatsDTO.builder()
+                .userId(user.getId())
+                .username(user.getUsername())
+                .followerCount(followStats.getFollowerCount())
+                .followingCount(followStats.getFollowingCount())
+                .relationType(relationType)
+                .build();
+
+        return Optional.ofNullable(user.getUserProfile())
+                .map(userProfile -> addProfileToFollowStatDTO(userProfile, userProfileWithFollowStatsDTO))
+                .orElseGet(() -> userProfileWithFollowStatsDTO);
+    }
+
+    private static UserProfileWithFollowStatsDTO addProfileToFollowStatDTO(UserProfile userProfile, UserProfileWithFollowStatsDTO userProfileWithFollowStats) {
         List<String> interests = userProfile.getUserProfileInterests()
                 .stream()
                 .map(userProfileInterest -> userProfileInterest.getInterest().getTagName())
                 .collect(Collectors.toList());
+        userProfileWithFollowStats.setNickname(userProfile.getNickname());
+        userProfileWithFollowStats.setInterests(interests);
+        userProfileWithFollowStats.setIntroduction(userProfile.getIntroduction());
 
-        return UserProfileWithFollowStatsDTO.builder()
-                .userId(user.getId())
-                .username(user.getUsername())
-                .followingCount(followStats.getFollowingCount())
-                .followerCount(followStats.getFollowerCount())
-                .description(userProfile.getIntroduction())
-                .interests(interests)
-                .relationType(relationType)
-                .build();
+        return userProfileWithFollowStats;
     }
 }

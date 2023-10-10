@@ -31,7 +31,8 @@
                 <img src="https://blog.kakaocdn.net/dn/bOjQ1n/btrLqc2YHQB/913MZQGPgTXhngMbWnicJK/img.jpg" alt="User Profile">
             </div>
             <div class="profile-details">
-                <h3 class="user-name" th:text="${userProfile.username}"></h3>
+                <h3 class="nickname" th:text="${userProfile.nickname}"></h3>
+                <h3 class="username" th:text="${userProfile.username}"></h3>
                 <div class="follow-stats">
                     <p>
                         <i class="fa-solid fa-heart" ></i>
@@ -49,7 +50,7 @@
                     <input name="followeeId" type="hidden" th:value="${userProfile.userId}">
                     <button class="relation-button" type="button" onclick="followUser(this.form)">Follow</button>
                 </form>
-                <p class="user-introduction" th:text="${userProfile.description}">Passionate about learning and achieving goals!</p>
+                <p class="user-introduction" th:text="${userProfile.introduction}">Passionate about learning and achieving goals!</p>
 
                 <div class="interest-tags">
                     <span th:each="interest : ${userProfile.interests}" class="tag" th:text="|#${interest}|"></span>

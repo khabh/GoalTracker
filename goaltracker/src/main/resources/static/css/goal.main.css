@@ -27,9 +27,14 @@
     margin-top: 1rem;
 }
 
-.user-name {
+.nickname {
     color: #333;
     font-size: 2rem;
+}
+
+.username {
+    color: #666;
+    font-size: 1.8rem;
     margin-bottom: 0.2rem;
 }
 
